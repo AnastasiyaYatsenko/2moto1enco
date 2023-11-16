@@ -1,0 +1,85 @@
+../Core/Src/TMC2209.cpp:8:1:TMC2209::TMC2209()	16	static
+../Core/Src/TMC2209.cpp:15:6:void TMC2209::setup(UART_HandleTypeDef*, long int, TMC2209::SerialAddress)	24	static
+../Core/Src/TMC2209.cpp:22:6:void TMC2209::setHardwareEnablePin(uint8_t)	16	static
+../Core/Src/TMC2209.cpp:29:6:void TMC2209::enable()	16	static
+../Core/Src/TMC2209.cpp:38:6:void TMC2209::disable()	16	static
+../Core/Src/TMC2209.cpp:47:10:uint16_t TMC2209::constrain(uint16_t, uint16_t, uint16_t)	24	static
+../Core/Src/TMC2209.cpp:57:6:void TMC2209::setMicrostepsPerStep(uint16_t)	24	static
+../Core/Src/TMC2209.cpp:69:6:void TMC2209::setMicrostepsPerStepPowerOfTwo(uint8_t)	16	static
+../Core/Src/TMC2209.cpp:112:6:void TMC2209::setRunCurrent(uint8_t)	24	static
+../Core/Src/TMC2209.cpp:118:6:void TMC2209::setHoldCurrent(uint8_t)	24	static
+../Core/Src/TMC2209.cpp:125:6:void TMC2209::setHoldDelay(uint8_t)	24	static
+../Core/Src/TMC2209.cpp:132:6:void TMC2209::setAllCurrentValues(uint8_t, uint8_t, uint8_t)	24	static
+../Core/Src/TMC2209.cpp:144:6:void TMC2209::enableInverseMotorDirection()	16	static
+../Core/Src/TMC2209.cpp:149:6:void TMC2209::disableInverseMotorDirection()	16	static
+../Core/Src/TMC2209.cpp:154:6:void TMC2209::setStandstillMode(TMC2209::StandstillMode)	16	static
+../Core/Src/TMC2209.cpp:159:6:void TMC2209::enableAutomaticCurrentScaling()	16	static
+../Core/Src/TMC2209.cpp:164:6:void TMC2209::disableAutomaticCurrentScaling()	16	static
+../Core/Src/TMC2209.cpp:169:6:void TMC2209::enableAutomaticGradientAdaptation()	16	static
+../Core/Src/TMC2209.cpp:174:6:void TMC2209::disableAutomaticGradientAdaptation()	16	static
+../Core/Src/TMC2209.cpp:179:6:void TMC2209::setPwmOffset(uint8_t)	16	static
+../Core/Src/TMC2209.cpp:184:6:void TMC2209::setPwmGradient(uint8_t)	16	static
+../Core/Src/TMC2209.cpp:189:6:void TMC2209::setPowerDownDelay(uint8_t)	16	static
+../Core/Src/TMC2209.cpp:193:6:void TMC2209::setReplyDelay(uint8_t)	24	static
+../Core/Src/TMC2209.cpp:203:6:void TMC2209::moveAtVelocity(int32_t)	16	static
+../Core/Src/TMC2209.cpp:207:6:void TMC2209::moveUsingStepDirInterface()	16	static
+../Core/Src/TMC2209.cpp:211:6:void TMC2209::enableStealthChop()	16	static
+../Core/Src/TMC2209.cpp:216:6:void TMC2209::disableStealthChop()	16	static
+../Core/Src/TMC2209.cpp:221:6:void TMC2209::setCoolStepDurationThreshold(uint32_t)	16	static
+../Core/Src/TMC2209.cpp:225:6:void TMC2209::setStealthChopDurationThreshold(uint32_t)	16	static
+../Core/Src/TMC2209.cpp:229:6:void TMC2209::setStallGuardThreshold(uint8_t)	16	static
+../Core/Src/TMC2209.cpp:233:6:void TMC2209::enableCoolStep(uint8_t, uint8_t)	16	static
+../Core/Src/TMC2209.cpp:242:6:void TMC2209::disableCoolStep()	16	static
+../Core/Src/TMC2209.cpp:248:6:void TMC2209::setCoolStepCurrentIncrement(TMC2209::CurrentIncrement)	16	static
+../Core/Src/TMC2209.cpp:253:6:void TMC2209::setCoolStepMeasurementCount(TMC2209::MeasurementCount)	16	static
+../Core/Src/TMC2209.cpp:258:6:void TMC2209::enableAnalogCurrentScaling()	16	static
+../Core/Src/TMC2209.cpp:263:6:void TMC2209::disableAnalogCurrentScaling()	16	static
+../Core/Src/TMC2209.cpp:268:6:void TMC2209::useExternalSenseResistors()	16	static
+../Core/Src/TMC2209.cpp:273:6:void TMC2209::useInternalSenseResistors()	16	static
+../Core/Src/TMC2209.cpp:280:9:uint8_t TMC2209::getVersion()	24	static
+../Core/Src/TMC2209.cpp:287:6:bool TMC2209::isCommunicating()	16	static
+../Core/Src/TMC2209.cpp:291:6:bool TMC2209::isSetupAndCommunicating()	16	static
+../Core/Src/TMC2209.cpp:295:6:bool TMC2209::isCommunicatingButNotSetup()	16	static
+../Core/Src/TMC2209.cpp:299:6:bool TMC2209::hardwareDisabled()	24	static
+../Core/Src/TMC2209.cpp:307:10:uint16_t TMC2209::getIOPins()	16	static
+../Core/Src/TMC2209.cpp:311:10:uint16_t TMC2209::getMicrostepsPerStep()	24	static
+../Core/Src/TMC2209.cpp:355:19:TMC2209::Settings TMC2209::getSettings()	16	static
+../Core/Src/TMC2209.cpp:409:17:TMC2209::Status TMC2209::getStatus()	24	static
+../Core/Src/TMC2209.cpp:417:10:uint32_t TMC2209::readDrvStatusBytes()	16	static
+../Core/Src/TMC2209.cpp:422:9:uint8_t TMC2209::getGlobalStatus()	16	static
+../Core/Src/TMC2209.cpp:426:9:uint8_t TMC2209::getInterfaceTransmissionCounter()	16	static
+../Core/Src/TMC2209.cpp:430:10:uint32_t TMC2209::getInterstepDuration()	16	static
+../Core/Src/TMC2209.cpp:434:10:uint16_t TMC2209::getStallGuardResult()	16	static
+../Core/Src/TMC2209.cpp:438:9:uint8_t TMC2209::getPwmScaleSum()	24	static
+../Core/Src/TMC2209.cpp:445:9:int16_t TMC2209::getPwmScaleAuto()	24	static
+../Core/Src/TMC2209.cpp:452:9:uint8_t TMC2209::getPwmOffsetAuto()	24	static
+../Core/Src/TMC2209.cpp:459:9:uint8_t TMC2209::getPwmGradientAuto()	24	static
+../Core/Src/TMC2209.cpp:466:10:uint16_t TMC2209::getMicrostepCounter()	16	static
+../Core/Src/TMC2209.cpp:472:6:void TMC2209::initialize(long int, TMC2209::SerialAddress)	24	static
+../Core/Src/TMC2209.cpp:485:5:int TMC2209::serialAvailable()	24	static
+../Core/Src/TMC2209.cpp:494:8:size_t TMC2209::serialWrite(uint8_t)	16	static
+../Core/Src/TMC2209.cpp:518:5:int TMC2209::serialRead()	24	static
+../Core/Src/TMC2209.cpp:540:6:void TMC2209::serialFlush()	16	static
+../Core/Src/TMC2209.cpp:556:6:void TMC2209::setOperationModeToSerial(TMC2209::SerialAddress)	16	static
+../Core/Src/TMC2209.cpp:568:6:void TMC2209::setRegistersToDefaults()	16	static
+../Core/Src/TMC2209.cpp:596:6:void TMC2209::readAndStoreRegisters()	16	static
+../Core/Src/TMC2209.cpp:602:6:bool TMC2209::serialOperationMode()	24	static
+../Core/Src/TMC2209.cpp:609:6:void TMC2209::minimizeMotorCurrent()	16	static
+../Core/Src/TMC2209.cpp:615:10:uint32_t TMC2209::reverseData(uint32_t)	24	static
+../Core/Src/TMC2209.cpp:703:6:void TMC2209::write(uint8_t, uint32_t)	32	static
+../Core/Src/TMC2209.cpp:716:10:uint32_t TMC2209::read(uint8_t)	32	static
+../Core/Src/TMC2209.cpp:740:9:uint8_t TMC2209::percentToCurrentSetting(uint8_t)	32	static
+../Core/Src/TMC2209.cpp:747:9:uint8_t TMC2209::currentSettingToPercent(uint8_t)	32	static
+../Core/Src/TMC2209.cpp:753:9:uint8_t TMC2209::map(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t)	16	static
+../Core/Src/TMC2209.cpp:757:9:uint8_t TMC2209::percentToHoldDelaySetting(uint8_t)	32	static
+../Core/Src/TMC2209.cpp:763:9:uint8_t TMC2209::holdDelaySettingToPercent(uint8_t)	32	static
+../Core/Src/TMC2209.cpp:768:6:void TMC2209::writeStoredGlobalConfig()	16	static
+../Core/Src/TMC2209.cpp:772:10:uint32_t TMC2209::readGlobalConfigBytes()	16	static
+../Core/Src/TMC2209.cpp:776:6:void TMC2209::writeStoredDriverCurrent()	16	static
+../Core/Src/TMC2209.cpp:789:6:void TMC2209::writeStoredChopperConfig()	16	static
+../Core/Src/TMC2209.cpp:793:10:uint32_t TMC2209::readChopperConfigBytes()	16	static
+../Core/Src/TMC2209.cpp:797:6:void TMC2209::writeStoredPwmConfig()	16	static
+../Core/Src/TMC2209.cpp:801:10:uint32_t TMC2209::readPwmConfigBytes()	16	static
+../Core/Src/TMC2209.cpp:628:9:uint8_t TMC2209::calculateCrc(Datagram&, uint8_t) [with Datagram = TMC2209::WriteReadReplyDatagram]	40	static
+../Core/Src/TMC2209.cpp:647:6:void TMC2209::sendDatagramUnidirectional(Datagram&, uint8_t) [with Datagram = TMC2209::WriteReadReplyDatagram]	24	static
+../Core/Src/TMC2209.cpp:628:9:uint8_t TMC2209::calculateCrc(Datagram&, uint8_t) [with Datagram = TMC2209::ReadRequestDatagram]	32	static

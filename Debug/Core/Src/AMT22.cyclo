@@ -1,0 +1,8 @@
+../Core/Src/AMT22.c:4:6:setCSLine	1
+../Core/Src/AMT22.c:11:9:spiWriteRead	1
+../Core/Src/AMT22.c:22:10:getPositionSPI	6
+../Core/Src/AMT22.c:53:6:setZeroSPI	1
+../Core/Src/AMT22.c:63:7:calculateAngle	3
+../Core/Src/AMT22.c:76:6:resetAMT22	1
+../Core/Src/AMT22.c:86:6:delay	1
+../Core/Src/AMT22.c:101:5:startDWT	1
