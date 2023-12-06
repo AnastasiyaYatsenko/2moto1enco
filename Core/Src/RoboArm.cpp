@@ -15,8 +15,8 @@ int RoboArm::EmergencyStop() {
 	HAL_GPIO_WritePin(EN1_GPIO_Port_M1, EN1_Pin_M1, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(EN2_GPIO_Port_M2, EN2_Pin_M2, GPIO_PIN_SET);
 
-	HAL_TIM_PWM_Stop(htim1M1, TIM_CHANNEL_3);
-	HAL_TIM_PWM_Stop(htim2M2, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Stop(htim1M1, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Stop(htim2M2, TIM_CHANNEL_2);
 	HAL_TIM_Base_Stop_IT(htim1M1);
 	HAL_TIM_Base_Stop_IT(htim2M2);
 
@@ -24,12 +24,12 @@ int RoboArm::EmergencyStop() {
 }
 
 int RoboArm::correctPosition() {
-	HAL_TIM_PWM_Stop(htim1M1, TIM_CHANNEL_3);
-	HAL_TIM_PWM_Stop(htim2M2, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Stop(htim1M1, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Stop(htim2M2, TIM_CHANNEL_2);
 	HAL_TIM_Base_Stop_IT(htim1M1);
 	HAL_TIM_Base_Stop_IT(htim2M2);
 
-	float actualAngle = GetAngleEncoders(GetPosEncoders(1)); //angle
+	float actualAngle = GetAngleEncoders(GetPosEncoders(1));// + defaultAngle; //angle
 	uint16_t actualDistance = (GetAngleEncoders(GetPosEncoders(2)) * 6.45)
 			/ (linearStepsMil * 360 / (motorStep * drvMicroSteps));
 
@@ -66,27 +66,27 @@ int RoboArm::correctPosition() {
 
 		htim1M1->Instance->PSC = psc;
 		htim1M1->Instance->ARR = periodM1;
-		htim1M1->Instance->CCR3 = periodM1/2;
+		htim1M1->Instance->CCR1 = periodM1/2;
 
 		delimiter = anglePsteps / distPsteps;
 		mnoj = ceil(periodM1 * delimiter);
 
 		htim2M2->Instance->PSC = psc;
 		htim2M2->Instance->ARR = mnoj;
-		htim2M2->Instance->CCR3 = mnoj / 2;
+		htim2M2->Instance->CCR2 = mnoj / 2;
 
 	} else if (anglePsteps < distPsteps) {
 
 		htim2M2->Instance->PSC = psc;
 		htim2M2->Instance->ARR = periodM1;
-		htim2M2->Instance->CCR3 = periodM1 / 2;
+		htim2M2->Instance->CCR2 = periodM1 / 2;
 
 		delimiter = distPsteps / anglePsteps;
 		mnoj = ceil(periodM1 * delimiter);
 
 		htim1M1->Instance->PSC = psc;
 		htim1M1->Instance->ARR = mnoj;
-		htim1M1->Instance->CCR3 = mnoj / 2;
+		htim1M1->Instance->CCR1 = mnoj / 2;
 	}
 
 	stateMoveM1 = true;
@@ -95,8 +95,8 @@ int RoboArm::correctPosition() {
 	SetEnable(1, true);
 	SetEnable(2, true);
 
-	HAL_TIM_PWM_Start(htim1M1, TIM_CHANNEL_3);
-	HAL_TIM_PWM_Start(htim2M2, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(htim1M1, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(htim2M2, TIM_CHANNEL_2);
 	HAL_TIM_Base_Start_IT(htim1M1);
 	HAL_TIM_Base_Start_IT(htim2M2);
 
@@ -105,18 +105,35 @@ int RoboArm::correctPosition() {
 
 }
 
+int RoboArm::GetLastPosition() {
+	int attempts = 0;
+	uint32_t posnowT_ang = GetPosEncoders(1);
+	while(posnowT_ang == 0xFFFF && ++attempts < 3)
+		posnowT_ang = GetPosEncoders(1);
+	lastPosAngle = GetAngleEncoders(posnowT_ang);
+
+	uint32_t posnowT_lin = GetPosEncoders(2);
+	while(posnowT_lin == 0xFFFF && ++attempts < 3)
+		posnowT_lin = GetPosEncoders(2);
+	float pos = GetAngleEncoders(posnowT_lin);
+	lastPosLinear = pos*250.0/360.0;
+	return 0;
+}
+
 int RoboArm::Move2MotorsSimu(float angle, uint16_t distance) {
 
 	// TIM1 Х  enc1 -  угол 360  -  8 оборотов движка на 1 оборот энкодера
 	// TIM2  Y  enc2 - линейный -  6,4516129 оборотов движка (это целое линейное перемещение с запасом) на 1 оборот энкодера
 
-	HAL_TIM_PWM_Stop(htim1M1, TIM_CHANNEL_3);      //остановили PWM таймера
-	HAL_TIM_PWM_Stop(htim2M2, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Stop(htim1M1, TIM_CHANNEL_1);      //остановили PWM таймера
+	HAL_TIM_PWM_Stop(htim2M2, TIM_CHANNEL_2);
 	HAL_TIM_Base_Stop_IT(htim1M1);				// остановили прерывание таймеров
 	HAL_TIM_Base_Stop_IT(htim2M2);
 
 	SetEnable(1, false);
 	SetEnable(2, false);
+
+	GetLastPosition();
 	/* выставили в каку сторону ехать мотору*/
 
 	if (lastPosAngle < angle) {
@@ -133,14 +150,16 @@ int RoboArm::Move2MotorsSimu(float angle, uint16_t distance) {
 	float actualPosAngle = abs(lastPosAngle - angle);
 	float actualPosDistance = abs(lastPosLinear - distance);
 
+	//set microstepping TODO
 	anglePsteps = (actualPosAngle * (8 * motorStep * drvMicroSteps)) / 360; //angle to steps
 	distPsteps = actualPosDistance * linearStepsMil; //steps to distanse
 
 	float distPangle = ((distPsteps / (motorStep * drvMicroSteps)) * 360
 			/ 6.45);
 
-	lastPosAngle = angle;
-	lastPosLinear = distance;
+	//TODO last position from encoder
+//	lastPosAngle = angle;
+//	lastPosLinear = distance;
 
 // 1, 2, 3, 4, 6, 8, 9, 12, 18, 24, 36 и 72 - Це можлива обрана максимальна швидкість для мотора з більшої кількістю кроків. Це дільник таймера
 
@@ -154,27 +173,27 @@ int RoboArm::Move2MotorsSimu(float angle, uint16_t distance) {
 
 		htim1M1->Instance->PSC = psc;
 		htim1M1->Instance->ARR = periodM1;
-		htim1M1->Instance->CCR3 = periodM1/2;
+		htim1M1->Instance->CCR1 = periodM1/2;
 
 		delimiter = anglePsteps / distPsteps;
 		mnoj = ceil(periodM1 * delimiter);
 
 		htim2M2->Instance->PSC = psc;
 		htim2M2->Instance->ARR = mnoj;
-		htim2M2->Instance->CCR3 = mnoj / 2;
+		htim2M2->Instance->CCR2 = mnoj / 2;
 
 	} else if (anglePsteps < distPsteps) {
 
 		htim2M2->Instance->PSC = psc;
 		htim2M2->Instance->ARR = periodM1;
-		htim2M2->Instance->CCR3 = periodM1 / 2;
+		htim2M2->Instance->CCR2 = periodM1 / 2;
 
 		delimiter = distPsteps / anglePsteps;
 		mnoj = ceil(periodM1 * delimiter);
 
 		htim1M1->Instance->PSC = psc;
 		htim1M1->Instance->ARR = mnoj;
-		htim1M1->Instance->CCR3 = mnoj / 2;
+		htim1M1->Instance->CCR1 = mnoj / 2;
 	}
 
 	stateMoveM1 = true;
@@ -183,8 +202,8 @@ int RoboArm::Move2MotorsSimu(float angle, uint16_t distance) {
 	SetEnable(1, true);
 	SetEnable(2, true);
 
-	HAL_TIM_PWM_Start(htim1M1, TIM_CHANNEL_3);
-	HAL_TIM_PWM_Start(htim2M2, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(htim1M1, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(htim2M2, TIM_CHANNEL_2);
 	HAL_TIM_Base_Start_IT(htim1M1);
 	HAL_TIM_Base_Start_IT(htim2M2);
 
@@ -262,7 +281,6 @@ uint32_t RoboArm::GetPosEncoders(uint8_t numEnc) {
 }
 
 int RoboArm::SetZeroEncoders() {
-
 	HAL_Delay(300);
 	getPositionSPI(arm_hspi1, CS_GPIO_Port_Enc1, CS_Pin_Enc1,
 			ResolutionEncoders);
@@ -273,6 +291,50 @@ int RoboArm::SetZeroEncoders() {
 	setZeroSPI(arm_hspi1, CS_GPIO_Port_Enc2, CS_Pin_Enc2);
 	HAL_Delay(250);
 	return 0;
+}
+
+int RoboArm::SetSoftwareZero() {
+//	ang_zero = GetPosEncoders(1);
+//	lin_zero = GetPosEncoders(2);
+
+	uint32_t posnowT = GetPosEncoders(1);
+	//			float ang = posnowT*360/16384;
+	ang_zero = GetAngleEncoders(posnowT);// - defaultAngle; //0, 120, 240
+	//			un_send.params.ang = angleT;
+
+	posnowT = GetPosEncoders(2);
+	float ang_pos = GetAngleEncoders(posnowT);
+	lin_zero = ang_pos*250.0/360.0;
+
+	return 0;
+}
+
+float RoboArm::ShiftZeroInputAng(float angle){
+	float ang_actual = ang_zero + angle;
+	if (ang_actual > 360.0)
+		ang_actual -= 360.0;
+	return ang_actual;
+}
+
+float RoboArm::ShiftZeroInputLin(float distance){
+	float lin_actual = lin_zero + distance;
+	if (lin_actual > 250.0)
+		lin_actual -= 250.0;
+	return lin_actual;
+}
+
+float RoboArm::ShiftZeroOutputAng(float ang_actual){
+	float ang = ang_actual - ang_zero;
+	if (ang < 0.0)
+		ang = 360.0 + ang;
+	return ang;
+}
+
+float RoboArm::ShiftZeroOutputLin(float lin_actual){
+	float lin = lin_actual - lin_zero;
+	if (lin < 0.0)
+		lin = 250.0 + lin;
+	return lin;
 }
 
 int RoboArm::SetSettMotors(TIM_HandleTypeDef &htim1, TIM_HandleTypeDef &htim2,

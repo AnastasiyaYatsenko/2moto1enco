@@ -13,9 +13,14 @@
 #include "AMT22.h"
 
 #define drvMicroSteps 8
+//#define drvMicroSteps 16
 #define spoolStep 20
 #define motorStep 200
 #define beltRatio 2
+
+#define encAmendment 0
+//#define encAmendment 5461
+//#define encAmendment 10923
 
 class RoboArm {
 public:
@@ -59,6 +64,7 @@ public:
 	RoboArm(uint8_t, uint8_t);
 	int OpenGripper();  //Open Gripper
 	int CloseGripper();  // Close Gripper
+	int GetLastPosition();                 //set last positions to encoder value
 	int Move2MotorsSimu(float, uint16_t);  //move 2 mottors simultaneously
 	int correctPosition();
 	int correctPositionSimu();
@@ -70,6 +76,11 @@ public:
 			uint8_t ResolutionEncodersT);     //settings for encoders
 	uint32_t GetPosEncoders(uint8_t); 	//get actually position encoders 1 or 2
 	int SetZeroEncoders();					  //set zero position all encoders
+	int SetSoftwareZero();                    //memorize current position as zero position
+	float ShiftZeroInputAng(float);           //converts user angle into actual angle
+	float ShiftZeroInputLin(float);     //converts user distance into actual distance
+	float ShiftZeroOutputAng(float);          //converts actual angle into user angle
+	float ShiftZeroOutputLin(float);    //converts actual distance into user distance
 	float GetAngleEncoders(uint32_t);	      //get calculated Angle - pos value
 	uint32_t GetPosTactEncoders(uint32_t);	  //get calculated position
 
@@ -101,6 +112,10 @@ private:
 	uint16_t lastPosLinear = 0;
 	float lastPosAngle = 0;
 	bool lastPosGripper = false;
+
+	//zero position info
+	float ang_zero = 0;
+	float lin_zero = 0;
 };
 
 #endif /* ROBOARM_H_ */

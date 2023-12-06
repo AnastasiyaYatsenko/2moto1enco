@@ -50,6 +50,7 @@ TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 
 UART_HandleTypeDef huart1;
+UART_HandleTypeDef huart2;
 
 osThreadId defaultTaskHandle;
 osThreadId myAMT22TaskHandle;
@@ -62,16 +63,21 @@ uint8_t rx_buffer[12]; //!!!!!
 uint8_t transfer_cplt = 0;
 
 bool startFirstMove = false;
+bool sendDataFlag = false;
+bool stopBeforeReboot = false;
+bool setZeroFlag = false;
 
 bool timerFT1 = true;
 bool timerFT2 = true;
 bool correctPosFlag = false;
-bool sendDataFlag = false;
 
 float recAngleF = 0.0;
 uint16_t recDist = 0;
 uint16_t recHold = 0;
 bool flagReadEnc = 0;
+
+int encMax = 16384;
+int linMax = 250;
 
 struct {
   float ang;
@@ -110,7 +116,8 @@ void StartUARTData(void const *argument);
 
 uint32_t cntImpulse1 = 0, cntImpulse2 = 0, step1 = 0, step2 = 0;
 
-RoboArm arm(120, 124);
+//RoboArm arm(120, 124);
+RoboArm arm(0, 124);
 
 int steppingyakkazavmaxim(float stepM1, float stepM2) {
 
@@ -118,8 +125,8 @@ int steppingyakkazavmaxim(float stepM1, float stepM2) {
 	arm.distPsteps = stepM2;
 
 	//числа 1, 2, 3, 4, 6, 8, 9, 12, 18, 24, 36 и 72 - Це можлива обрана максимальна швидкість для мотора з більшої кількістю кроків. Це дільник таймера
-	HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_3);
-	HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
 	HAL_TIM_Base_Stop_IT(&htim1);
 	HAL_TIM_Base_Stop_IT(&htim2);
 
@@ -133,14 +140,14 @@ int steppingyakkazavmaxim(float stepM1, float stepM2) {
 
 		htim1.Instance->PSC = psc;
 		htim1.Instance->ARR = periodM1;
-		htim1.Instance->CCR3 = periodM1 / 2;
+		htim1.Instance->CCR1 = periodM1 / 2;
 
 		float delimiter = stepM1 / stepM2;
 		float mnoj = ceil(periodM1 * delimiter);
 
 		htim2.Instance->PSC = psc;
 		htim2.Instance->ARR = mnoj;
-		htim2.Instance->CCR3 = mnoj / 2;
+		htim2.Instance->CCR2 = mnoj / 2;
 
 	} else if (stepM1 < stepM2) {
 //	uint8_t delimiter=stepM2/stepM1;
@@ -151,14 +158,14 @@ int steppingyakkazavmaxim(float stepM1, float stepM2) {
 
 		htim2.Instance->PSC = psc;
 		htim2.Instance->ARR = periodM1;
-		htim2.Instance->CCR3 = periodM1 / 2;
+		htim2.Instance->CCR2 = periodM1 / 2;
 
 		float delimiter = stepM2 / stepM1;
 		float mnoj = ceil(periodM1 * delimiter);
 
 		htim1.Instance->PSC = psc;
 		htim1.Instance->ARR = mnoj;
-		htim1.Instance->CCR3 = mnoj / 2;
+		htim1.Instance->CCR1 = mnoj / 2;
 
 	}
 
@@ -167,8 +174,8 @@ int steppingyakkazavmaxim(float stepM1, float stepM2) {
 	arm.SetEnable(1, true);
 	arm.SetEnable(2, true);
 
-	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
 	HAL_TIM_Base_Start_IT(&htim1);
 	HAL_TIM_Base_Start_IT(&htim2);
 
@@ -217,7 +224,7 @@ int main(void) {
 	Dir2_Pin, En_GPIO_Port, En_Pin, En2_GPIO_Port, En2_Pin);
 	arm.SetSettEncoders(hspi1, CS_GPIO_Port, CS_Pin, CS2_GPIO_Port, CS2_Pin,
 			14);
-	arm.SetZeroEncoders();
+//	arm.SetZeroEncoders();
 
 	//steppingyakkazavmaxim(15000, 12000);
 
@@ -266,7 +273,9 @@ int main(void) {
 	while (1) {
 
 		/* USER CODE END WHILE */
-
+//		uint32_t pos1 = arm.GetPosEncoders(1);
+//		uint32_t pos2 = arm.GetPosEncoders(2);
+//		int a = pos1+pos2;
 		/* USER CODE BEGIN 3 */
 	}
 	/* USER CODE END 3 */
@@ -334,7 +343,7 @@ static void MX_SPI1_Init(void) {
 	hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
 	hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
 	hspi1.Init.NSS = SPI_NSS_SOFT;
-	hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
+	hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
 	hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
 	hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
 	hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -389,7 +398,7 @@ static void MX_TIM1_Init(void) {
 	sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
 	sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
 	sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-	if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3)
+	if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1)
 			!= HAL_OK) {
 		Error_Handler();
 	}
@@ -439,7 +448,7 @@ static void MX_TIM2_Init(void) {
 	}
 	sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
 	sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-	if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig)
+	if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig)//
 			!= HAL_OK) {
 		Error_Handler();
 	}
@@ -447,7 +456,7 @@ static void MX_TIM2_Init(void) {
 	sConfigOC.Pulse = 0;
 	sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
 	sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-	if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3)
+	if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_2)
 			!= HAL_OK) {
 		Error_Handler();
 	}
@@ -486,6 +495,38 @@ static void MX_USART1_UART_Init(void) {
 	/* USER CODE BEGIN USART1_Init 2 */
 
 	/* USER CODE END USART1_Init 2 */
+
+}
+
+/**
+  * @brief USART2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART2_UART_Init(void) {
+
+	/* USER CODE BEGIN USART2_Init 0 */
+
+	/* USER CODE END USART2_Init 0 */
+
+	/* USER CODE BEGIN USART2_Init 1 */
+
+	/* USER CODE END USART2_Init 1 */
+	huart2.Instance = USART2;
+	huart2.Init.BaudRate = 115200;
+	huart2.Init.WordLength = UART_WORDLENGTH_8B;
+	huart2.Init.StopBits = UART_STOPBITS_1;
+	huart2.Init.Parity = UART_PARITY_NONE;
+	huart2.Init.Mode = UART_MODE_TX_RX;
+	huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+	huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+	if (HAL_HalfDuplex_Init(&huart2) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	/* USER CODE BEGIN USART2_Init 2 */
+
+	/* USER CODE END USART2_Init 2 */
 
 }
 
@@ -554,9 +595,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 		case 1:
 			startFirstMove = true;
 			break;
+		case 25:
+			stopBeforeReboot = true;
 		case 50:
 			sendDataFlag = true;
 			break;
+		case 75:
+			setZeroFlag = true;
 		}
 
 //		size_t s = sizeof(un);
@@ -575,7 +620,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 //			recDist = ((rx_buffer[6] - '0') * 100) + ((rx_buffer[7] - '0') * 10)
 //					+ (rx_buffer[8] - '0');
 //
-		HAL_UART_Transmit_IT(&huart1, rx_buffer, 8);
+
+//		HAL_UART_Transmit_IT(&huart1, rx_buffer, 8);
+
 //			//	HAL_UART_Transmit_IT(&huart1,reinterpret_cast<uint8_t *>(recDist), sizeof(recDist));
 //			switch (recHold) {
 //			case 0:
@@ -642,7 +689,10 @@ void StartDefaultTask(void const *argument) {
 
 		if (startFirstMove) {
 			startFirstMove = false;
-			arm.Move2MotorsSimu(un.params.ang, un.params.lin);
+			float angle = arm.ShiftZeroInputAng(un.params.ang);
+			uint16_t distance = arm.ShiftZeroInputLin(un.params.lin);
+			arm.Move2MotorsSimu(angle, distance);
+//			arm.Move2MotorsSimu(un.params.ang, un.params.lin);
 //			arm.Move2MotorsSimu(recAngleF, recDist);
 			//steppingyakkazavmaxim(2000, 230);
 		}
@@ -691,39 +741,61 @@ void StartAMT22Data(void const *argument) {
 void StartUARTData(void const *argument) {
 	/* USER CODE BEGIN StartUARTData */
 	HAL_UART_Receive_IT(&huart1, rx_buffer, sizeof(rx_buffer));
-	uint32_t posnowT;
-	float angleT = 0;
-	uint32_t linearDist = 0;
-	flagReadEnc = 1;
-	uint32_t distPmm = 0;
+	uint32_t posnowT_1, posnowT_2;
+//	float angleT = 0;
+//	uint32_t linearDist = 0;
+//	flagReadEnc = 1;
+//	uint32_t distPmm = 0;
 	arm.setPrintState(true);
 
 	/* Infinite loop */
 	for (;;) {
 
 		if (arm.getPrintState() && sendDataFlag) {
-
 			sendDataFlag = false;
 			char str[100];
-			posnowT = arm.GetPosEncoders(1);
-			angleT = arm.GetAngleEncoders(posnowT) * 100;
-			//un_send.params.ang = angleT;
 
-			posnowT = arm.GetPosEncoders(2);
-			angleT = arm.GetAngleEncoders(posnowT) * 100;
+			int attempts = 0;
 
-			float distPsteps = angleT * (motorStep * drvMicroSteps)
-					* (6.45 / 360);
-			uint32_t mils = distPsteps / arm.linearStepsMil;
+			posnowT_1 = arm.GetPosEncoders(1);
+//			//if the position returned was 0xFFFF we know that there was an error calculating the checksum
+			//make 3 attempts for position. we will pre-increment attempts because we'll use the number later and want an accurate count
+			while(posnowT_1 == 0xFFFF && ++attempts < 3)
+				posnowT_1 = arm.GetPosEncoders(1); //try again
 
-			//un_send.params.lin = mils;
-			//un_send.params.hold = 0;
-			un_send.params.lin = 120.5;
-			un_send.params.ang = 360.0;
+//			float ang = posnowT_1*360/16384;
+			float ang_actual = arm.GetAngleEncoders(posnowT_1);
+			float ang = arm.ShiftZeroOutputAng(ang_actual);
+//			un_send.params.ang = angleT;
+
+			posnowT_2 = arm.GetPosEncoders(2);
+			while(posnowT_2 == 0xFFFF && ++attempts < 3)
+				posnowT_2 = arm.GetPosEncoders(2); //try again
+
+			float ang_pos = arm.GetAngleEncoders(posnowT_2);
+			float pos_actual = ang_pos*250.0/360.0;
+			float pos = arm.ShiftZeroOutputLin(pos_actual);
+//			angleT = arm.GetAngleEncoders(posnowT) * 100;
+//
+//			float distPsteps = angleT * (motorStep * drvMicroSteps)
+//					* (6.45 / 360);
+//			uint32_t mils = distPsteps / arm.linearStepsMil;
+//
+//			un_send.params.lin = mils;
+//			un_send.params.hold = 0;
+			un_send.params.lin = pos;
+			un_send.params.ang = ang;
 			un_send.params.hold = 0;
 
-//			sprintf(str, "%.2f:", send_params.ang);//, send_params.lin, 100);
+//			uint8_t send_arr[] = {0x01,0x02,0x03,0x04,
+//					0x05,0x06,0x07,0x08,
+//					0x09,0x0a,0x0b,0x0c};
+//
+//			size_t s = sizeof(un_send);
+
+//			sprintf(str, "%.2f:", un_send.params.ang);//, send_params.lin, 100);
 			HAL_UART_Transmit(&huart1, un_send.bytes, sizeof(un_send.bytes), 12);
+			int a = 1;
 //			HAL_UART_Transmit(&huart1, (uint8_t*)str, sizeof(str), 12);
 //			sendDataFlag = false;
 
@@ -747,6 +819,26 @@ void StartUARTData(void const *argument) {
 //			HAL_UART_Transmit(&huart1, (uint8_t*) str, strlen(str),
 //					HAL_MAX_DELAY);
 		}
+
+		if (stopBeforeReboot){
+			stopBeforeReboot = false;
+			arm.EmergencyStop();
+			un_send.params.lin = 0;
+			un_send.params.ang = 0;
+			un_send.params.hold = 10;
+			HAL_UART_Transmit(&huart1, un_send.bytes, sizeof(un_send.bytes), 12);
+		}
+
+		if (setZeroFlag){
+			setZeroFlag = false;
+//			arm.SetZeroEncoders();
+			arm.SetSoftwareZero();
+			un_send.params.lin = 0;
+			un_send.params.ang = 0;
+			un_send.params.hold = 10;
+			HAL_UART_Transmit(&huart1, un_send.bytes, sizeof(un_send.bytes), 12);
+		}
+
 		osDelay(500);
 	}
 	/* USER CODE END StartUARTData */
@@ -768,7 +860,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		cntImpulse1++;
 		if (cntImpulse1 >= arm.anglePsteps) {
 
-			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_3);
+			HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
 			HAL_TIM_Base_Stop_IT(&htim1);
 			arm.SetEnable(1, false);
 			cntImpulse1 = 0;
@@ -786,7 +878,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 		cntImpulse2++;
 		if (cntImpulse2 >= arm.distPsteps) {
-			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_3);
+			HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
 			HAL_TIM_Base_Stop_IT(&htim2);
 			arm.SetEnable(2, false);
 			cntImpulse2 = 0;
