@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include "AMT22.h"
 #include "RoboArm.h"
-#include "TMC2209.h"
+//#include "TMC2209.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -50,7 +50,7 @@ TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 
 UART_HandleTypeDef huart1;
-UART_HandleTypeDef huart2;
+//UART_HandleTypeDef huart2;
 
 osThreadId defaultTaskHandle;
 osThreadId myAMT22TaskHandle;
@@ -103,6 +103,7 @@ static void MX_TIM1_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_USART1_UART_Init(void);
+//static void MX_USART2_UART_Init(void);
 void StartDefaultTask(void const *argument);
 void StartAMT22Data(void const *argument);
 void StartUARTData(void const *argument);
@@ -215,15 +216,17 @@ int main(void) {
 	MX_TIM2_Init();
 	MX_SPI1_Init();
 	MX_USART1_UART_Init();
+//	MX_USART2_UART_Init();
 	/* USER CODE BEGIN 2 */
 
 	HAL_TIM_Base_Init(&htim1);
 	HAL_TIM_Base_Init(&htim2);
 
 	arm.SetSettMotors(htim1, htim2, Dir_GPIO_Port, Dir_Pin, Dir2_GPIO_Port,
-	Dir2_Pin, En_GPIO_Port, En_Pin, En2_GPIO_Port, En2_Pin);
+	Dir2_Pin, En_GPIO_Port, En_Pin, En2_GPIO_Port, En2_Pin);//, huart2);
 	arm.SetSettEncoders(hspi1, CS_GPIO_Port, CS_Pin, CS2_GPIO_Port, CS2_Pin,
 			14);
+//	arm.SetMicrosteps(8);
 //	arm.SetZeroEncoders();
 
 	//steppingyakkazavmaxim(15000, 12000);
@@ -503,32 +506,32 @@ static void MX_USART1_UART_Init(void) {
   * @param None
   * @retval None
   */
-static void MX_USART2_UART_Init(void) {
-
-	/* USER CODE BEGIN USART2_Init 0 */
-
-	/* USER CODE END USART2_Init 0 */
-
-	/* USER CODE BEGIN USART2_Init 1 */
-
-	/* USER CODE END USART2_Init 1 */
-	huart2.Instance = USART2;
-	huart2.Init.BaudRate = 115200;
-	huart2.Init.WordLength = UART_WORDLENGTH_8B;
-	huart2.Init.StopBits = UART_STOPBITS_1;
-	huart2.Init.Parity = UART_PARITY_NONE;
-	huart2.Init.Mode = UART_MODE_TX_RX;
-	huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-	huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-	if (HAL_HalfDuplex_Init(&huart2) != HAL_OK)
-	{
-		Error_Handler();
-	}
-	/* USER CODE BEGIN USART2_Init 2 */
-
-	/* USER CODE END USART2_Init 2 */
-
-}
+//static void MX_USART2_UART_Init(void) {
+//
+//	/* USER CODE BEGIN USART2_Init 0 */
+//
+//	/* USER CODE END USART2_Init 0 */
+//
+//	/* USER CODE BEGIN USART2_Init 1 */
+//
+//	/* USER CODE END USART2_Init 1 */
+//	huart2.Instance = USART2;
+//	huart2.Init.BaudRate = 115200;
+//	huart2.Init.WordLength = UART_WORDLENGTH_8B;
+//	huart2.Init.StopBits = UART_STOPBITS_1;
+//	huart2.Init.Parity = UART_PARITY_NONE;
+//	huart2.Init.Mode = UART_MODE_TX_RX;
+//	huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+//	huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+//	if (HAL_HalfDuplex_Init(&huart2) != HAL_OK)
+//	{
+//		Error_Handler();
+//	}
+//	/* USER CODE BEGIN USART2_Init 2 */
+//
+//	/* USER CODE END USART2_Init 2 */
+//
+//}
 
 /**
  * @brief GPIO Initialization Function
@@ -692,6 +695,7 @@ void StartDefaultTask(void const *argument) {
 			float angle = arm.ShiftZeroInputAng(un.params.ang);
 			uint16_t distance = arm.ShiftZeroInputLin(un.params.lin);
 			arm.Move2MotorsSimu(angle, distance);
+//			arm.correctPosition();
 //			arm.Move2MotorsSimu(un.params.ang, un.params.lin);
 //			arm.Move2MotorsSimu(recAngleF, recDist);
 			//steppingyakkazavmaxim(2000, 230);

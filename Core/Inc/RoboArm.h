@@ -11,6 +11,7 @@
 #include "stm32f1xx_hal.h"
 #include <math.h>
 #include "AMT22.h"
+//#include "TMC2209.h"
 
 #define drvMicroSteps 8
 //#define drvMicroSteps 16
@@ -29,6 +30,7 @@ public:
 	//Settings for moto/rs
 	TIM_HandleTypeDef *htim1M1;
 	TIM_HandleTypeDef *htim2M2;
+//	UART_HandleTypeDef *huart_tmc;
 
 	GPIO_TypeDef *Dir1_GPIO_Port_M1;
 	uint16_t Dir1_Pin_M1;
@@ -51,6 +53,10 @@ public:
 
 	uint32_t posNowEnc1, posNowEnc2;
 
+	//TMC2209 drivers
+//	TMC2209 tmcd_lin;
+//	TMC2209 tmcd_ang;
+
 	// 124 мм лыныйне перемышення   добавить к линейному перемщению при сбросе
 	//Записать последние данные в память флеш
 
@@ -65,11 +71,12 @@ public:
 	int OpenGripper();  //Open Gripper
 	int CloseGripper();  // Close Gripper
 	int GetLastPosition();                 //set last positions to encoder value
-	int Move2MotorsSimu(float, uint16_t);  //move 2 mottors simultaneously
+	int Move2MotorsSimu(float, float);  //move 2 mottors simultaneously
 	int correctPosition();
 	int correctPositionSimu();
 	int MoveAngle(uint16_t angle); 			  //move angle motors
 	int MoveDistanse(uint16_t dist);  		  //move distance motor
+//	int SetMicrosteps(uint16_t microsteps_per_step); //set microsteps per step
 	int SetSettEncoders(SPI_HandleTypeDef &arm_hspi1T,
 			GPIO_TypeDef *CS_GPIO_Port_Enc1T, uint16_t CS_Pin_Enc1T,
 			GPIO_TypeDef *CS_GPIO_Port_Enc2T, uint16_t CS_Pin_Enc2T,
@@ -93,6 +100,7 @@ public:
 			GPIO_TypeDef *Dir2_GPIO_Port_M2T, uint16_t Dir2_Pin_M2T,
 			GPIO_TypeDef *EN1_GPIO_Port_M1T, uint16_t EN1_Pin_M1T,
 			GPIO_TypeDef *EN2_GPIO_Port_M2T, uint16_t EN2_Pin_M2T);
+//			UART_HandleTypeDef &huart_tmcT);
 
 	int SetEnable(uint16_t numMotor, bool state);
 
