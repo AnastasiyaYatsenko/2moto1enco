@@ -42,6 +42,7 @@ public:
 	uint16_t EN2_Pin_M2;
 
 	float distPsteps = 0, anglePsteps = 0;
+	float distMax = 250.0;
 
 	//ENCODERS
 	uint8_t ResolutionEncoders = 14;

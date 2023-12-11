@@ -113,12 +113,12 @@ int RoboArm::GetLastPosition() {
 	while(posnowT_ang == 0xFFFF && ++attempts < 3)
 		posnowT_ang = GetPosEncoders(1);
 	lastPosAngle = GetAngleEncoders(posnowT_ang);
-
+	attempts = 0;
 	uint32_t posnowT_lin = GetPosEncoders(2);
 	while(posnowT_lin == 0xFFFF && ++attempts < 3)
 		posnowT_lin = GetPosEncoders(2);
 	float pos = GetAngleEncoders(posnowT_lin);
-	lastPosLinear = pos*250.0/360.0;
+	lastPosLinear = pos*distMax/360.0;
 	return 0;
 }
 
@@ -138,7 +138,7 @@ int RoboArm::Move2MotorsSimu(float angle, float distance) {
 	GetLastPosition();
 
 	float pos_ang = abs(lastPosAngle - angle);
-	float inverse_pos_ang = 360.0 - pos_ang;
+	float inverse_pos_ang = abs(360.0 - pos_ang);
 	float actualPosAngle;
 	/* выставили в каку сторону ехать мотору*/
 	if (inverse_pos_ang < pos_ang) {
@@ -158,13 +158,18 @@ int RoboArm::Move2MotorsSimu(float angle, float distance) {
 		}
 	}
 
+//	if (lastPosLinear < distance) {
+//		HAL_GPIO_WritePin(Dir2_GPIO_Port_M2, Dir2_Pin_M2, GPIO_PIN_SET);
+//	} else if (lastPosLinear > distance) {
+//		HAL_GPIO_WritePin(Dir2_GPIO_Port_M2, Dir2_Pin_M2, GPIO_PIN_RESET);
+//	}
 	if (lastPosLinear < distance) {
-		HAL_GPIO_WritePin(Dir2_GPIO_Port_M2, Dir2_Pin_M2, GPIO_PIN_SET);
-	} else if (lastPosLinear > distance) {
-		HAL_GPIO_WritePin(Dir2_GPIO_Port_M2, Dir2_Pin_M2, GPIO_PIN_RESET);
-	}
+			HAL_GPIO_WritePin(Dir2_GPIO_Port_M2, Dir2_Pin_M2, GPIO_PIN_RESET);
+		} else if (lastPosLinear > distance) {
+			HAL_GPIO_WritePin(Dir2_GPIO_Port_M2, Dir2_Pin_M2, GPIO_PIN_SET);
+		}
 
-	actualPosAngle = abs(lastPosAngle - angle);
+//	actualPosAngle = abs(lastPosAngle - angle);
 	float actualPosDistance = abs(lastPosLinear - distance);
 
 	//set microstepping TODO
@@ -411,14 +416,23 @@ int RoboArm::SetSoftwareZero() {
 //	ang_zero = GetPosEncoders(1);
 //	lin_zero = GetPosEncoders(2);
 
-	uint32_t posnowT = GetPosEncoders(1);
+	int attempts = 0;
+	uint32_t posnowT_1 = GetPosEncoders(1);
+
+	while(posnowT_1 == 0xFFFF && ++attempts < 3)
+		posnowT_1 = GetPosEncoders(1); //try again
+
+	attempts = 0;
+
 	//			float ang = posnowT*360/16384;
-	ang_zero = GetAngleEncoders(posnowT);// - defaultAngle; //0, 120, 240
+	ang_zero = GetAngleEncoders(posnowT_1);// - defaultAngle; //0, 120, 240
 	//			un_send.params.ang = angleT;
 
-	posnowT = GetPosEncoders(2);
-	float ang_pos = GetAngleEncoders(posnowT);
-	lin_zero = ang_pos*250.0/360.0;
+	uint32_t posnowT_2 = GetPosEncoders(2);
+	while(posnowT_2 == 0xFFFF && ++attempts < 3)
+		posnowT_2 = GetPosEncoders(2); //try again
+	float ang_pos = GetAngleEncoders(posnowT_2);
+	lin_zero = ang_pos*distMax/360.0;
 
 	return 0;
 }
@@ -432,8 +446,8 @@ float RoboArm::ShiftZeroInputAng(float angle){
 
 float RoboArm::ShiftZeroInputLin(float distance){
 	float lin_actual = lin_zero + distance;
-	if (lin_actual > 250.0)
-		lin_actual -= 250.0;
+	if (lin_actual > distMax)
+		lin_actual -= distMax;
 	return lin_actual;
 }
 
@@ -447,7 +461,7 @@ float RoboArm::ShiftZeroOutputAng(float ang_actual){
 float RoboArm::ShiftZeroOutputLin(float lin_actual){
 	float lin = lin_actual - lin_zero;
 	if (lin < 0.0)
-		lin = 250.0 + lin;
+		lin = distMax + lin;
 	return lin;
 }
 

@@ -227,6 +227,7 @@ int main(void) {
 	arm.SetSettEncoders(hspi1, CS_GPIO_Port, CS_Pin, CS2_GPIO_Port, CS2_Pin,
 			14);
 //	arm.SetMicrosteps(8);
+//	arm.SetSoftwareZero();
 //	arm.SetZeroEncoders();
 
 	//steppingyakkazavmaxim(15000, 12000);
@@ -606,74 +607,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 		case 75:
 			setZeroFlag = true;
 		}
-
-//		size_t s = sizeof(un);
-//		if (rx_buffer[0] == '0' || rx_buffer[0] == '1' || rx_buffer[0] == '2') {
-//
-//			recHold = (rx_buffer[0] - '0');
-//
-//			uint16_t recAngle = 0;
-//			recAngle = ((rx_buffer[1] - '0') * 10000)
-//					+ ((rx_buffer[2] - '0') * 1000)
-//					+ ((rx_buffer[3] - '0') * 100) + ((rx_buffer[4] - '0') * 10)
-//					+ (rx_buffer[5] - '0');
-//
-//			recAngleF = (float) recAngle / 100.0;
-//
-//			recDist = ((rx_buffer[6] - '0') * 100) + ((rx_buffer[7] - '0') * 10)
-//					+ (rx_buffer[8] - '0');
-//
-
-//		HAL_UART_Transmit_IT(&huart1, rx_buffer, 8);
-
-//			//	HAL_UART_Transmit_IT(&huart1,reinterpret_cast<uint8_t *>(recDist), sizeof(recDist));
-//			switch (recHold) {
-//			case 0:
-//			case 1:
-//				startFirstMove = true;
-//				break;
-//			case 2:
-//				switch (recAngle){
-//				case 0:
-//					sendDataFlag = true;
-//					break;
-//				}
-//				break;
-//			}
-//		}
 		memset(rx_buffer, 0, sizeof(rx_buffer));
 		HAL_GPIO_TogglePin(Led_GPIO_Port, Led_Pin);
 	}
 	HAL_UART_Receive_IT(&huart1, rx_buffer, sizeof(rx_buffer));
 }
-
-//void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-//	//UNUSED(huart);
-//	if (huart == &huart1) {
-////		if(!strcmp(rx_buffer,"TEXT")) {
-////		}
-//		if (rx_buffer[0] == '1') {
-//
-//			uint16_t recAngle = 0;
-//			recAngle = ((rx_buffer[1] - '0') * 10000)
-//					+ ((rx_buffer[2] - '0') * 1000)
-//					+ ((rx_buffer[3] - '0') * 100) + ((rx_buffer[4] - '0') * 10)
-//					+ (rx_buffer[5] - '0');
-//
-//			recAngleF = (float) recAngle / 100.0;
-//
-//			recDist = ((rx_buffer[6] - '0') * 100) + ((rx_buffer[7] - '0') * 10)
-//					+ (rx_buffer[8] - '0');
-//
-//			HAL_UART_Transmit_IT(&huart1, rx_buffer, 8);
-//			//	HAL_UART_Transmit_IT(&huart1,reinterpret_cast<uint8_t *>(recDist), sizeof(recDist));
-//			startFirstMove = true;
-//		}
-//		memset(rx_buffer, 0, sizeof(rx_buffer));
-//		HAL_GPIO_TogglePin(Led_GPIO_Port, Led_Pin);
-//	}
-//	HAL_UART_Receive_IT(&huart1, rx_buffer, sizeof(rx_buffer));
-//}
 
 /* USER CODE END 4 */
 
@@ -770,6 +708,8 @@ void StartUARTData(void const *argument) {
 //			float ang = posnowT_1*360/16384;
 			float ang_actual = arm.GetAngleEncoders(posnowT_1);
 			float ang = arm.ShiftZeroOutputAng(ang_actual);
+
+			attempts = 0;
 //			un_send.params.ang = angleT;
 
 			posnowT_2 = arm.GetPosEncoders(2);
