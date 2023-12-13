@@ -79,8 +79,8 @@ all: main-build
 main-build: 2moto1enco.elf secondary-outputs
 
 # Tool invocations
-2moto1enco.elf 2moto1enco.map: $(OBJS) $(USER_OBJS) /home/anastasiia/Documents/AA/my/robot-main/2moto1enco/STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "2moto1enco.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"/home/anastasiia/Documents/AA/my/robot-main/2moto1enco/STM32F103C8TX_FLASH.ld" -Wl,-Map="2moto1enco.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+2moto1enco.elf 2moto1enco.map: $(OBJS) $(USER_OBJS) C:\Users\admin\Documents\aelrepos\roboT\nst\2moto1enco\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "2moto1enco.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\admin\Documents\aelrepos\roboT\nst\2moto1enco\STM32F103C8TX_FLASH.ld" -Wl,-Map="2moto1enco.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

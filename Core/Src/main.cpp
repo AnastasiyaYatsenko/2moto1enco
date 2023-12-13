@@ -67,8 +67,8 @@ bool sendDataFlag = false;
 bool stopBeforeReboot = false;
 bool setZeroFlag = false;
 
-bool timerFT1 = true;
-bool timerFT2 = true;
+bool timerFT1 = false;
+bool timerFT2 = false;
 bool correctPosFlag = false;
 
 float recAngleF = 0.0;
@@ -120,6 +120,8 @@ uint32_t cntImpulse1 = 0, cntImpulse2 = 0, step1 = 0, step2 = 0;
 //RoboArm arm(120, 124);
 RoboArm arm(0, 124);
 
+
+//Эталонно работающая функция - удалить
 int steppingyakkazavmaxim(float stepM1, float stepM2) {
 
 	arm.anglePsteps = stepM1;
@@ -639,16 +641,15 @@ void StartDefaultTask(void const *argument) {
 			//steppingyakkazavmaxim(2000, 230);
 		}
 
-//		if(!timerFT1 && !timerFT2){
-//
-//			timerFT1=true;
-//			timerFT2=true;
-//
-//			HAL_Delay(1000);
-//			correctPosFlag=true;
-//			arm.correctPosition();
-//
-//		}
+		if(timerFT1 && timerFT2){
+
+			timerFT1=false;
+			timerFT2=false;
+
+			correctPosFlag=false;
+			arm.correctPosition();
+
+		}
 
 		osDelay(1);
 	}
@@ -809,13 +810,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			arm.SetEnable(1, false);
 			cntImpulse1 = 0;
 			arm.stateMoveM1 = false;
-			if (correctPosFlag) {
-				timerFT1 = true;
-				correctPosFlag = false;
-			} else {
-				timerFT1 = false;
-			}
-
+			timerFT1 = true;
 		}
 
 	} else if (htim->Instance == TIM2) {
@@ -826,18 +821,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			HAL_TIM_Base_Stop_IT(&htim2);
 			arm.SetEnable(2, false);
 			cntImpulse2 = 0;
-			arm.stateMoveM1 = false;
-			if (correctPosFlag) {
-				timerFT2 = true;
-				correctPosFlag = false;
-			} else {
-				timerFT2 = false;
-			}
-
+			arm.stateMoveM = false;
+			timerFT2 = true;
 		}
-	} else if (htim->Instance == TIM4) {
-		HAL_IncTick();
-	}
 
 	/* USER CODE END Callback 0 */
 	if (htim->Instance == TIM4) {
