@@ -5,6 +5,10 @@ RoboArm::RoboArm(uint8_t defaultAngleT, uint8_t defaultDistanseT) {
 	defaultAngle = defaultAngleT;
 	defaultDistanse = defaultDistanseT;
 
+	tmcd_angle.setup(huartTmc, 115200, tmcd_angle.SERIAL_ADDRESS_0);
+	tmcd_gripper.setup(huartTmc, 115200, tmcd_gripper.SERIAL_ADDRESS_1);
+	tmcd_linear.setup(huartTmc, 115200, tmcd_linear.SERIAL_ADDRESS_3);
+
 	startDWT();
 }
 
@@ -14,13 +18,17 @@ int RoboArm::CloseGripper() {
 
 int RoboArm::EmergencyStop() {
 
-	HAL_GPIO_WritePin(EN1_GPIO_Port_M1, EN1_Pin_M1, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(EN2_GPIO_Port_M2, EN2_Pin_M2, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(En1_GPIO_Port_M1, En1_Pin_M1, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(En2_GPIO_Port_M2, En2_Pin_M2, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(En3_GPIO_Port_M3, En3_Pin_M3, GPIO_PIN_SET);
 
 	HAL_TIM_PWM_Stop(htim1M1, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Stop(htim2M2, TIM_CHANNEL_2);
+	HAL_TIM_PWM_Stop(htim3M3, TIM_CHANNEL_3);
+
 	HAL_TIM_Base_Stop_IT(htim1M1);
 	HAL_TIM_Base_Stop_IT(htim2M2);
+	HAL_TIM_Base_Stop_IT(htim3M3);
 
 	return 0;
 }
@@ -176,8 +184,7 @@ int RoboArm::Move2MotorsSimu(float angle, float distance) {
 	anglePsteps = (actualPosAngle * (8 * motorStep * drvMicroSteps)) / 360; //angle to steps
 	distPsteps = actualPosDistance * linearStepsMil; //steps to distanse
 
-	float distPangle = ((distPsteps / (motorStep * drvMicroSteps)) * 360
-			/ 6.45);
+//	float distPangle = ((distPsteps / (motorStep * drvMicroSteps)) * 360/ 6.4516129);
 
 	//TODO last position from encoder
 //	lastPosAngle = angle;
@@ -325,7 +332,9 @@ int RoboArm::Move2MotorsSimu(float angle, float distance) {
 int RoboArm::factoryReset() {
 	SetZeroEncoders();
 	posNowAngle = defaultAngle;
-	posNowDistance = 124;
+	posNowDistance = defaultDistanse;
+
+	return 0;
 }
 
 int RoboArm::OpenGripper() {
@@ -349,17 +358,15 @@ bool RoboArm::getPrintState() {
 	}
 }
 
-int RoboArm::cringeFunction(bool state) {
-	stateMovement[0] = stateMovement[1];
-	stateMovement[1] = state;
-}
 
-//int RoboArm::SetMicrosteps(uint16_t microsteps_per_step){
-//	tmcd_lin.setMicrostepsPerStep(microsteps_per_step);
-//	tmcd_ang.setMicrostepsPerStep(microsteps_per_step);
-//
-//	return 0;
-//}
+int RoboArm::SetMicrosteps4All(uint8_t microsteps_per_step){
+
+	tmcd_angle.setMicrostepsPerStepPowerOfTwo(microsteps_per_step);
+	tmcd_gripper.setMicrostepsPerStepPowerOfTwo(microsteps_per_step);
+	tmcd_linear.setMicrostepsPerStepPowerOfTwo(microsteps_per_step);
+
+	return 0;
+}
 
 int RoboArm::SetSettEncoders(SPI_HandleTypeDef &arm_hspi1T,
 		GPIO_TypeDef *CS_GPIO_Port_Enc1T, uint16_t CS_Pin_Enc1T,
@@ -465,23 +472,32 @@ float RoboArm::ShiftZeroOutputLin(float lin_actual){
 	return lin;
 }
 
-int RoboArm::SetSettMotors(TIM_HandleTypeDef &htim1, TIM_HandleTypeDef &htim2,
+int RoboArm::SetSettMotors(UART_HandleTypeDef &huartTmc,TIM_HandleTypeDef &htim1, TIM_HandleTypeDef &htim2, TIM_HandleTypeDef &htim3,
 		GPIO_TypeDef *Dir1_GPIO_Port_M1T, uint16_t Dir1_Pin_M1T,
 		GPIO_TypeDef *Dir2_GPIO_Port_M2T, uint16_t Dir2_Pin_M2T,
-		GPIO_TypeDef *EN1_GPIO_Port_M1T, uint16_t EN1_Pin_M1T,
-		GPIO_TypeDef *EN2_GPIO_Port_M2T, uint16_t EN2_Pin_M2T){
+		GPIO_TypeDef *Dir3_GPIO_Port_M3T, uint16_t Dir3_Pin_M3T,
+		GPIO_TypeDef *En1_GPIO_Port_M1T, uint16_t En1_Pin_M1T,
+		GPIO_TypeDef *En2_GPIO_Port_M2T, uint16_t En2_Pin_M2T,
+		GPIO_TypeDef *En3_GPIO_Port_M3T, uint16_t En3_Pin_M3T){
 //		UART_HandleTypeDef &huart_tmcT) {
 	htim1M1 = &htim1;
 	htim2M2 = &htim2;
+	htim3M3 = &htim3;
 
 	Dir1_GPIO_Port_M1 = Dir1_GPIO_Port_M1T;
 	Dir1_Pin_M1 = Dir1_Pin_M1T;
 	Dir2_GPIO_Port_M2 = Dir2_GPIO_Port_M2T;
 	Dir2_Pin_M2 = Dir2_Pin_M2T;
-	EN1_GPIO_Port_M1 = EN1_GPIO_Port_M1T;
-	EN1_Pin_M1 = EN1_Pin_M1T;
-	EN2_GPIO_Port_M2 = EN2_GPIO_Port_M2T;
-	EN2_Pin_M2 = EN2_Pin_M2T;
+	Dir3_GPIO_Port_M3 = Dir3_GPIO_Port_M3T;
+	Dir3_Pin_M3 = Dir3_Pin_M3T;
+
+	En1_GPIO_Port_M1 = En1_GPIO_Port_M1T;
+	En1_Pin_M1 = En1_Pin_M1T;
+	En2_GPIO_Port_M2 = En2_GPIO_Port_M2T;
+	En2_Pin_M2 = En2_Pin_M2T;
+	En3_GPIO_Port_M3 = En3_GPIO_Port_M3T;
+	En3_Pin_M3 = En3_Pin_M3T;
+
 //	huart_tmc = &huart_tmcT;
 
 //	tmcd_lin.setup(huart_tmc, 115200, tmcd_lin.SERIAL_ADDRESS_0);
@@ -510,20 +526,12 @@ int RoboArm::SetEnable(uint16_t numMotor, bool state) {
 	}
 
 	if (numMotor == 1) {
-		HAL_GPIO_WritePin(EN1_GPIO_Port_M1, EN1_Pin_M1, pinSet);
+		HAL_GPIO_WritePin(En1_GPIO_Port_M1, En1_Pin_M1, pinSet);
 	} else if (numMotor == 2) {
-		HAL_GPIO_WritePin(EN2_GPIO_Port_M2, EN2_Pin_M2, pinSet);
-	} else {
-
+		HAL_GPIO_WritePin(En2_GPIO_Port_M2, En2_Pin_M2, pinSet);
+	} else if (numMotor == 3) {
+		HAL_GPIO_WritePin(En3_GPIO_Port_M3, En3_Pin_M3, pinSet);
 	}
-}
-
-int RoboArm::MoveAngle(uint16_t angle) {
-
-	return 0;
-}
-
-int RoboArm::MoveDistanse(uint16_t angle) {
 
 	return 0;
 }

@@ -28,7 +28,9 @@ void TMC2209::setHardwareEnablePin(uint8_t hardware_enable_pin) {
 
 void TMC2209::enable() {
 	if (hardware_enable_pin_ >= 0) {
-		HAL_GPIO_WritePin(En_GPIO_Port, En_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(En1_GPIO_Port, En1_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(En2_GPIO_Port, En2_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(En3_GPIO_Port, En3_Pin, GPIO_PIN_RESET);
 		//  digitalWrite(hardware_enable_pin_, LOW);
 	}
 	chopper_config_.toff = toff_;
@@ -38,7 +40,9 @@ void TMC2209::enable() {
 void TMC2209::disable() {
 	if (hardware_enable_pin_ >= 0) {
 		//digitalWrite(hardware_enable_pin_, HIGH);
-		HAL_GPIO_WritePin(En_GPIO_Port, En_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(En1_GPIO_Port, En1_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(En2_GPIO_Port, En2_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(En3_GPIO_Port, En3_Pin, GPIO_PIN_SET);
 	}
 	chopper_config_.toff = TOFF_DISABLE;
 	writeStoredChopperConfig();

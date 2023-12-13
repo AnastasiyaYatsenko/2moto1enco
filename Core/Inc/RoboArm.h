@@ -11,6 +11,7 @@
 #include "stm32f1xx_hal.h"
 #include <math.h>
 #include "AMT22.h"
+#include "TMC2209.h"
 // #include "TMC2209.h"
 
 #define drvMicroSteps 8
@@ -30,18 +31,26 @@ public:
 	// Settings for moto/rs
 	TIM_HandleTypeDef *htim1M1;
 	TIM_HandleTypeDef *htim2M2;
-	//	UART_HandleTypeDef *huart_tmc;
+	TIM_HandleTypeDef *htim3M3;
+
+	UART_HandleTypeDef *huartTmc;
 
 	GPIO_TypeDef *Dir1_GPIO_Port_M1;
 	uint16_t Dir1_Pin_M1;
 	GPIO_TypeDef *Dir2_GPIO_Port_M2;
 	uint16_t Dir2_Pin_M2;
-	GPIO_TypeDef *EN1_GPIO_Port_M1;
-	uint16_t EN1_Pin_M1;
-	GPIO_TypeDef *EN2_GPIO_Port_M2;
-	uint16_t EN2_Pin_M2;
 
-	float distPsteps = 0, anglePsteps = 0;
+	GPIO_TypeDef *Dir3_GPIO_Port_M3;
+	uint16_t Dir3_Pin_M3;
+
+	GPIO_TypeDef *En1_GPIO_Port_M1;
+	uint16_t En1_Pin_M1;
+	GPIO_TypeDef *En2_GPIO_Port_M2;
+	uint16_t En2_Pin_M2;
+	GPIO_TypeDef *En3_GPIO_Port_M3;
+	uint16_t En3_Pin_M3;
+
+	uint32_t distPsteps = 0, anglePsteps = 0;
 	float distMax = 250.0;
 
 	// ENCODERS
@@ -55,8 +64,9 @@ public:
 	uint32_t posNowEnc1, posNowEnc2;
 
 	// TMC2209 drivers
-	//	TMC2209 tmcd_lin;
-	//	TMC2209 tmcd_ang;
+		TMC2209 tmcd_linear;
+		TMC2209 tmcd_angle;
+		TMC2209 tmcd_gripper;
 
 	// 124 мм лыныйне перемышення   добавить к линейному перемщению при сбросе
 	// Записать последние данные в память флеш
@@ -74,9 +84,6 @@ public:
 	int GetLastPosition();			   // set last positions to encoder value
 	int Move2MotorsSimu(float, float); // move 2 mottors simultaneously
 	int correctPosition();
-	int correctPositionSimu();
-	int MoveAngle(uint16_t angle);	 // move angle motors
-	int MoveDistanse(uint16_t dist); // move distance motor
 	//	int SetMicrosteps(uint16_t microsteps_per_step); //set microsteps per step
 	int SetSettEncoders(SPI_HandleTypeDef &arm_hspi1T,
 						GPIO_TypeDef *CS_GPIO_Port_Enc1T, uint16_t CS_Pin_Enc1T,
@@ -94,24 +101,19 @@ public:
 
 	int setPrintState(bool); // flag to send status to uart
 	bool getPrintState();
-
 	int EmergencyStop();
-	int SetSettMotors(TIM_HandleTypeDef &htim1, TIM_HandleTypeDef &htim2,
+	int SetSettMotors(UART_HandleTypeDef &huartTmc, TIM_HandleTypeDef &htim1, TIM_HandleTypeDef &htim2, TIM_HandleTypeDef &htim3,
 					  GPIO_TypeDef *Dir1_GPIO_Port_M1T, uint16_t Dir1_Pin_M1T,
 					  GPIO_TypeDef *Dir2_GPIO_Port_M2T, uint16_t Dir2_Pin_M2T,
-					  GPIO_TypeDef *EN1_GPIO_Port_M1T, uint16_t EN1_Pin_M1T,
-					  GPIO_TypeDef *EN2_GPIO_Port_M2T, uint16_t EN2_Pin_M2T);
+					  GPIO_TypeDef *Dir3_GPIO_Port_M3T, uint16_t Dir3_Pin_M3T,
+					  GPIO_TypeDef *En1_GPIO_Port_M1T, uint16_t En1_Pin_M1T,
+					  GPIO_TypeDef *En2_GPIO_Port_M2T, uint16_t En2_Pin_M2T,
+					  GPIO_TypeDef *En3_GPIO_Port_M3T, uint16_t En3_Pin_M3T);
 	//			UART_HandleTypeDef &huart_tmcT);
 
+	int SetMicrosteps4All(uint8_t);
 	int SetEnable(uint16_t numMotor, bool state);
-
-	int saveDatatoFlash();
-	int readDataonFlash();
-	int checkPosition();
 	int factoryReset();
-	int getStateArm();
-
-	int cringeFunction(bool); // set log state movement
 
 private:
 	bool PrintAllState = false;

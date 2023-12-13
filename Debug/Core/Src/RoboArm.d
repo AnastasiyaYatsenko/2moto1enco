@@ -25,7 +25,8 @@ Core/Src/RoboArm.o: ../Core/Src/RoboArm.cpp ../Core/Inc/RoboArm.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
- ../Core/Inc/AMT22.h ../Core/Inc/DWT_Delay.h
+ ../Core/Inc/AMT22.h ../Core/Inc/DWT_Delay.h ../Core/Inc/TMC2209.h \
+ ../Core/Inc/DWT_Delay.h
 ../Core/Inc/RoboArm.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -54,4 +55,6 @@ Core/Src/RoboArm.o: ../Core/Src/RoboArm.cpp ../Core/Inc/RoboArm.h \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
 ../Core/Inc/AMT22.h:
+../Core/Inc/DWT_Delay.h:
+../Core/Inc/TMC2209.h:
 ../Core/Inc/DWT_Delay.h:

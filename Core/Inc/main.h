@@ -68,18 +68,46 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define Led_Pin GPIO_PIN_13
 #define Led_GPIO_Port GPIOC
-#define En_Pin GPIO_PIN_5
-#define En_GPIO_Port GPIOA
-#define Dir_Pin GPIO_PIN_6
-#define Dir_GPIO_Port GPIOA
-#define CS_Pin GPIO_PIN_0
-#define CS_GPIO_Port GPIOB
+#define PC14_Pin GPIO_PIN_14
+#define PC14_GPIO_Port GPIOC
+#define PC15_Pin GPIO_PIN_15
+#define PC15_GPIO_Port GPIOC
+#define En2_Pin GPIO_PIN_0
+#define En2_GPIO_Port GPIOA
+#define Button_Pin GPIO_PIN_4
+#define Button_GPIO_Port GPIOA
+#define En1_Pin GPIO_PIN_5
+#define En1_GPIO_Port GPIOA
+#define Dir1_Pin GPIO_PIN_6
+#define Dir1_GPIO_Port GPIOA
+#define CS1_Pin GPIO_PIN_0
+#define CS1_GPIO_Port GPIOB
 #define CS2_Pin GPIO_PIN_1
 #define CS2_GPIO_Port GPIOB
 #define Dir2_Pin GPIO_PIN_10
 #define Dir2_GPIO_Port GPIOB
-#define En2_Pin GPIO_PIN_11
-#define En2_GPIO_Port GPIOA
+#define Led1_Pin GPIO_PIN_11
+#define Led1_GPIO_Port GPIOB
+#define EndCap1_Pin GPIO_PIN_12
+#define EndCap1_GPIO_Port GPIOB
+#define EndCap2_Pin GPIO_PIN_14
+#define EndCap2_GPIO_Port GPIOB
+#define S1_Pin GPIO_PIN_15
+#define S1_GPIO_Port GPIOB
+#define EndCap4_Pin GPIO_PIN_11
+#define EndCap4_GPIO_Port GPIOA
+#define Buser_Pin GPIO_PIN_12
+#define Buser_GPIO_Port GPIOA
+#define Reserved_Pin GPIO_PIN_15
+#define Reserved_GPIO_Port GPIOA
+#define S2_Pin GPIO_PIN_6
+#define S2_GPIO_Port GPIOB
+#define EndCap3_Pin GPIO_PIN_7
+#define EndCap3_GPIO_Port GPIOB
+#define En3_Pin GPIO_PIN_8
+#define En3_GPIO_Port GPIOB
+#define Dir3_Pin GPIO_PIN_9
+#define Dir3_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

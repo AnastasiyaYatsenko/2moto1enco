@@ -43,7 +43,7 @@ Core/Src/main.o: ../Core/Src/main.cpp ../Core/Inc/main.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h \
  ../Core/Inc/AMT22.h ../Core/Inc/DWT_Delay.h ../Core/Inc/RoboArm.h \
- ../Core/Inc/AMT22.h
+ ../Core/Inc/AMT22.h ../Core/Inc/TMC2209.h ../Core/Inc/DWT_Delay.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -92,3 +92,5 @@ Core/Src/main.o: ../Core/Src/main.cpp ../Core/Inc/main.h \
 ../Core/Inc/DWT_Delay.h:
 ../Core/Inc/RoboArm.h:
 ../Core/Inc/AMT22.h:
+../Core/Inc/TMC2209.h:
+../Core/Inc/DWT_Delay.h:
