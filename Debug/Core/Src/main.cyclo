@@ -1,19 +1,17 @@
-C:\ST\STM32CubeIDE_1.11.2\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.11.3.rel1.win32_1.1.1.202309131626\tools\bin/../lib/gcc/arm-none-eabi/11.3.1/../../../../arm-none-eabi/include/c++/11.3.1/cmath:165:3:constexpr float std::ceil(float)	1
-../Core/Src/main.cpp:126:5:int steppingyakkazavmaxim(float, float)	3
-../Core/Src/main.cpp:195:5:int main()	1
-../Core/Src/main.cpp:297:6:void SystemClock_Config()	3
-../Core/Src/main.cpp:341:13:void MX_SPI1_Init()	2
-../Core/Src/main.cpp:379:13:void MX_TIM1_Init()	5
-../Core/Src/main.cpp:444:13:void MX_TIM2_Init()	4
-../Core/Src/main.cpp:493:13:void MX_TIM3_Init()	4
-../Core/Src/main.cpp:542:13:void MX_USART1_UART_Init()	2
-../Core/Src/main.cpp:575:13:void MX_USART2_UART_Init()	2
-../Core/Src/main.cpp:608:13:void MX_GPIO_Init()	1
-../Core/Src/main.cpp:671:6:void HAL_UART_RxCpltCallback(UART_HandleTypeDef*)	9
-../Core/Src/main.cpp:707:6:void StartDefaultTask(const void*)	4
-../Core/Src/main.cpp:747:6:void StartAMT22Data(const void*)	1
-../Core/Src/main.cpp:766:6:void StartUARTData(const void*)	12
-../Core/Src/main.cpp:885:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	6
-../Core/Src/main.cpp:927:6:void Error_Handler()	1
-../Core/Src/main.cpp:935:1:void __static_initialization_and_destruction_0(int, int)	3
-../Core/Src/main.cpp:935:1:cpp)	1
+../Core/Src/main.cpp:130:5:int main()	1
+../Core/Src/main.cpp:232:6:void SystemClock_Config()	3
+../Core/Src/main.cpp:276:13:void MX_SPI1_Init()	2
+../Core/Src/main.cpp:314:13:void MX_TIM1_Init()	5
+../Core/Src/main.cpp:379:13:void MX_TIM2_Init()	4
+../Core/Src/main.cpp:428:13:void MX_TIM3_Init()	4
+../Core/Src/main.cpp:477:13:void MX_USART1_UART_Init()	2
+../Core/Src/main.cpp:510:13:void MX_USART2_UART_Init()	2
+../Core/Src/main.cpp:543:13:void MX_GPIO_Init()	1
+../Core/Src/main.cpp:606:6:void HAL_UART_RxCpltCallback(UART_HandleTypeDef*)	9
+../Core/Src/main.cpp:642:6:void StartDefaultTask(const void*)	4
+../Core/Src/main.cpp:680:6:void StartAMT22Data(const void*)	1
+../Core/Src/main.cpp:721:6:void StartUARTData(const void*)	12
+../Core/Src/main.cpp:820:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	6
+../Core/Src/main.cpp:862:6:void Error_Handler()	1
+../Core/Src/main.cpp:870:1:void __static_initialization_and_destruction_0(int, int)	3
+../Core/Src/main.cpp:870:1:cpp)	1

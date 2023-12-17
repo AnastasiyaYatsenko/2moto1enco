@@ -14,7 +14,7 @@
 #include "TMC2209.h"
 // #include "TMC2209.h"
 
-#define drvMicroSteps 8
+#define drvMicroSteps 32
 // #define drvMicroSteps 16
 #define spoolStep 20
 #define motorStep 200
@@ -82,8 +82,10 @@ public:
 	int OpenGripper();				   // Open Gripper
 	int CloseGripper();				   // Close Gripper
 	int GetLastPosition();			   // set last positions to encoder value
-	int Move2MotorsSimu(float, float); // move 2 mottors simultaneously
-	int correctPosition();
+	int Move2Motors(float, float); // move 2 mottors simultaneously
+	int MoveLinear(float);
+	int MoveAngle(float);
+	int MoveCorrectPosition();
 	//	int SetMicrosteps(uint16_t microsteps_per_step); //set microsteps per step
 	int SetSettEncoders(SPI_HandleTypeDef &arm_hspi1T,
 						GPIO_TypeDef *CS_GPIO_Port_Enc1T, uint16_t CS_Pin_Enc1T,
@@ -119,8 +121,12 @@ private:
 	bool PrintAllState = false;
 
 	// Данные о текущем положении моторов
-	uint16_t lastPosLinear = 0;
-	float lastPosAngle = 0;
+	float lastPosLinear_Enc = 0;
+	float lastPosAngle_Enc = 0;
+
+	float lastPosLinear_Set = 0;
+	float lastPosAngle_Set = 0;
+
 	bool lastPosGripper = false;
 
 	// zero position info

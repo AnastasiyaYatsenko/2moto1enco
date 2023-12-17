@@ -22,7 +22,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <stdio.h>
 #include "AMT22.h"
 #include "RoboArm.h"
 //#include "TMC2209.h"
@@ -70,7 +69,7 @@ bool setZeroFlag = false;
 
 bool timerFT1 = false;
 bool timerFT2 = false;
-bool correctPosFlag = false;
+bool startCorrectPos = false;
 
 float recAngleF = 0.0;
 uint16_t recDist = 0;
@@ -121,70 +120,6 @@ uint32_t cntImpulse1 = 0, cntImpulse2 = 0, step1 = 0, step2 = 0;
 
 //RoboArm arm(120, 124);
 RoboArm arm(0, 124);
-
-//Эталонно работающая функция - удалить
-int steppingyakkazavmaxim(float stepM1, float stepM2) {
-
-	arm.anglePsteps = stepM1;
-	arm.distPsteps = stepM2;
-
-	//числа 1, 2, 3, 4, 6, 8, 9, 12, 18, 24, 36 и 72 - Це можлива обрана максимальна швидкість для мотора з більшої кількістю кроків. Це дільник таймера
-	HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_2);
-	HAL_TIM_Base_Stop_IT(&htim1);
-	HAL_TIM_Base_Stop_IT(&htim2);
-
-	//  частота шим = входящая частота / период (arr)
-	//  125 000 (125 килогерц)  = 16 000 000 / 128
-	// (1/60)*1000 = частота 16 (герц);
-	float periodM1 = 1200; //мікросекунд
-	uint32_t psc = 72;
-
-	if (stepM1 > stepM2) {
-
-		htim1.Instance->PSC = psc;
-		htim1.Instance->ARR = periodM1;
-		htim1.Instance->CCR1 = periodM1 / 2;
-
-		float delimiter = stepM1 / stepM2;
-		float mnoj = ceil(periodM1 * delimiter);
-
-		htim2.Instance->PSC = psc;
-		htim2.Instance->ARR = mnoj;
-		htim2.Instance->CCR2 = mnoj / 2;
-
-	} else if (stepM1 < stepM2) {
-//	uint8_t delimiter=stepM2/stepM1;
-//	uint16_t impMore = (72000000/psc_max)/1000; 						//імпульсів кроків за секунду для мотора з більшої кількістю кроків  КРОКІВ НА СЕКУНДУ
-//	uint16_t allSecMore = (stepM2/impMore)*1000;		 				//загальний час роботи мотора із більшої кількістю кроків  мілісекунд
-//	uint16_t stepSecM1 =  (stepM1/allSecMore)*1000; 					//кроків на секунду на двигуна LESS  250
-//	uint16_t PSCmLess= 72000000 / (stepSecM1 * 1000); 					//дільник для мотора LESS
-
-		htim2.Instance->PSC = psc;
-		htim2.Instance->ARR = periodM1;
-		htim2.Instance->CCR2 = periodM1 / 2;
-
-		float delimiter = stepM2 / stepM1;
-		float mnoj = ceil(periodM1 * delimiter);
-
-		htim1.Instance->PSC = psc;
-		htim1.Instance->ARR = mnoj;
-		htim1.Instance->CCR1 = mnoj / 2;
-
-	}
-
-	//Старт таймера та переривань
-
-	arm.SetEnable(1, true);
-	arm.SetEnable(2, true);
-
-	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
-	HAL_TIM_Base_Start_IT(&htim1);
-	HAL_TIM_Base_Start_IT(&htim2);
-
-	return 0;
-}
 
 /* USER CODE END 0 */
 
@@ -710,12 +645,11 @@ void StartDefaultTask(void const * argument)
 	arm.setPrintState(false);
 	/* Infinite loop */
 	for (;;) {
-
 		if (startFirstMove) {
 			startFirstMove = false;
 			float angle = arm.ShiftZeroInputAng(un.params.ang);
 			uint16_t distance = arm.ShiftZeroInputLin(un.params.lin);
-			arm.Move2MotorsSimu(angle, distance);
+			arm.Move2Motors(angle, distance);
 //			arm.correctPosition();
 //			arm.Move2MotorsSimu(un.params.ang, un.params.lin);
 //			arm.Move2MotorsSimu(recAngleF, recDist);
@@ -727,8 +661,7 @@ void StartDefaultTask(void const * argument)
 			timerFT1 = false;
 			timerFT2 = false;
 
-			correctPosFlag = false;
-			arm.correctPosition();
+		//	arm.correctPosition();
 
 		}
 
@@ -751,7 +684,29 @@ void StartAMT22Data(void const * argument)
 	/* Infinite loop */
 	for (;;) {
 
-		osDelay(50);
+
+//		char str[100];
+//		uint32_t posnowT = arm.GetPosEncoders(1);
+//		float angleT = arm.GetAngleEncoders(posnowT) * 100;
+//		sprintf(str, "x: enc: %d | ang: %d \n", posnowT, (uint16_t) angleT);
+//		HAL_UART_Transmit(&huart1, (uint8_t*) str, strlen(str),
+//				HAL_MAX_DELAY);
+//
+//		posnowT = arm.GetPosEncoders(2);
+//		angleT = arm.GetAngleEncoders(posnowT) * 100;
+//
+//		float distPsteps = angleT * (motorStep * drvMicroSteps)
+//				* (6.4516129 / 360);
+//		uint32_t mils = distPsteps / arm.linearStepsMil;
+//
+//		sprintf(str, "y: enc: %d | ang: %d | mm: %d \n", posnowT,
+//				(uint16_t) angleT, mils);
+//
+//		HAL_UART_Transmit(&huart1, (uint8_t*) str, strlen(str),
+//				HAL_MAX_DELAY);
+
+
+		osDelay(1000);
 	}
   /* USER CODE END StartAMT22Data */
 }
@@ -773,7 +728,6 @@ void StartUARTData(void const * argument)
 //	flagReadEnc = 1;
 //	uint32_t distPmm = 0;
 	arm.setPrintState(true);
-
 	/* Infinite loop */
 	for (;;) {
 
@@ -827,25 +781,6 @@ void StartUARTData(void const * argument)
 //			HAL_UART_Transmit(&huart1, (uint8_t*)str, sizeof(str), 12);
 //			sendDataFlag = false;
 
-//			char str[100];
-//			posnowT = arm.GetPosEncoders(1);
-//			angleT = arm.GetAngleEncoders(posnowT) * 100;
-//			sprintf(str, "x: enc: %d | ang: %d \n", posnowT, (uint16_t) angleT);
-//			HAL_UART_Transmit(&huart1, (uint8_t*) str, strlen(str),
-//					HAL_MAX_DELAY);
-//
-//			posnowT = arm.GetPosEncoders(2);
-//			angleT = arm.GetAngleEncoders(posnowT) * 100;
-//
-//			float distPsteps = angleT * (motorStep * drvMicroSteps)
-//					* (6.45 / 360);
-//			uint32_t mils = distPsteps / arm.linearStepsMil;
-//
-//			sprintf(str, "y: enc: %d | ang: %d | mm: %d \n", posnowT,
-//					(uint16_t) angleT, mils);
-//
-//			HAL_UART_Transmit(&huart1, (uint8_t*) str, strlen(str),
-//					HAL_MAX_DELAY);
 		}
 
 		if (stopBeforeReboot) {
