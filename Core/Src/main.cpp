@@ -24,7 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include "AMT22.h"
 #include "RoboArm.h"
-//#include "TMC2209.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -116,6 +116,8 @@ void StartUARTData(void const * argument);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+
+
 uint32_t cntImpulse1 = 0, cntImpulse2 = 0, step1 = 0, step2 = 0;
 
 //RoboArm arm(120, 124);
@@ -162,7 +164,7 @@ int main(void)
 	HAL_TIM_Base_Init(&htim1);
 	HAL_TIM_Base_Init(&htim2);
 
-	arm.SetSettMotors(huart2,htim1, htim2, htim3, Dir1_GPIO_Port, Dir1_Pin,
+	arm.SetSettMotors(huart2, huart1, htim1, htim2, htim3, Dir1_GPIO_Port, Dir1_Pin,
 			Dir2_GPIO_Port, Dir2_Pin, Dir3_GPIO_Port, Dir3_Pin, En1_GPIO_Port,
 			En1_Pin, En2_GPIO_Port, En2_Pin, En3_GPIO_Port, En3_Pin);
 
@@ -173,6 +175,8 @@ int main(void)
 //	arm.SetZeroEncoders();
 
 	//steppingyakkazavmaxim(15000, 12000);
+
+
 
   /* USER CODE END 2 */
 
@@ -704,6 +708,7 @@ void StartAMT22Data(void const * argument)
 //
 //		HAL_UART_Transmit(&huart1, (uint8_t*) str, strlen(str),
 //				HAL_MAX_DELAY);
+
 
 
 		osDelay(1000);

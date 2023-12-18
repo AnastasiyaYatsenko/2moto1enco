@@ -12,9 +12,11 @@
 #include <math.h>
 #include "AMT22.h"
 #include "TMC2209.h"
-// #include "TMC2209.h"
+#include <cstring>
+#include <cstdio>
 
-#define drvMicroSteps 32
+
+#define drvMicroSteps 8
 // #define drvMicroSteps 16
 #define spoolStep 20
 #define motorStep 200
@@ -33,7 +35,6 @@ public:
 	TIM_HandleTypeDef *htim2M2;
 	TIM_HandleTypeDef *htim3M3;
 
-	UART_HandleTypeDef *huartTmc;
 
 	GPIO_TypeDef *Dir1_GPIO_Port_M1;
 	uint16_t Dir1_Pin_M1;
@@ -68,6 +69,9 @@ public:
 		TMC2209 tmcd_angle;
 		TMC2209 tmcd_gripper;
 
+		UART_HandleTypeDef *huartTmc;
+		UART_HandleTypeDef *huartPrint;
+
 	// 124 мм лыныйне перемышення   добавить к линейному перемщению при сбросе
 	// Записать последние данные в память флеш
 
@@ -75,10 +79,10 @@ public:
 	float posNowAngle;
 	uint16_t posNowDistance;
 	bool stateMoveM1 = false, stateMoveM2 = false;
-	uint16_t defaultAngle, defaultDistanse; // стандартний кут //0 120 240 та дистанція 124 мм
+	float defaultAngle, defaultDistanse; // стандартний кут //0 120 240 та дистанція 124 мм
 	bool stateMovement[2];
 
-	RoboArm(uint8_t, uint8_t);
+	RoboArm(float, float);
 	int OpenGripper();				   // Open Gripper
 	int CloseGripper();				   // Close Gripper
 	int GetLastPosition();			   // set last positions to encoder value
@@ -86,12 +90,12 @@ public:
 	int MoveLinear(float);
 	int MoveAngle(float);
 	int MoveCorrectPosition();
-	//	int SetMicrosteps(uint16_t microsteps_per_step); //set microsteps per step
 	int SetSettEncoders(SPI_HandleTypeDef &arm_hspi1T,
 						GPIO_TypeDef *CS_GPIO_Port_Enc1T, uint16_t CS_Pin_Enc1T,
 						GPIO_TypeDef *CS_GPIO_Port_Enc2T, uint16_t CS_Pin_Enc2T,
 						uint8_t ResolutionEncodersT); // settings for encoders
 	uint32_t GetPosEncoders(uint8_t);				  // get actually position encoders 1 or 2
+
 	int SetZeroEncoders();							  // set zero position all encoders
 	int SetSoftwareZero();							  // memorize current position as zero position
 	float ShiftZeroInputAng(float);					  // converts user angle into actual angle
@@ -104,7 +108,7 @@ public:
 	int setPrintState(bool); // flag to send status to uart
 	bool getPrintState();
 	int EmergencyStop();
-	int SetSettMotors(UART_HandleTypeDef &huartTmc, TIM_HandleTypeDef &htim1, TIM_HandleTypeDef &htim2, TIM_HandleTypeDef &htim3,
+	int SetSettMotors(UART_HandleTypeDef &huartTmcT, UART_HandleTypeDef &huartPrintT, TIM_HandleTypeDef &htim1, TIM_HandleTypeDef &htim2, TIM_HandleTypeDef &htim3,
 					  GPIO_TypeDef *Dir1_GPIO_Port_M1T, uint16_t Dir1_Pin_M1T,
 					  GPIO_TypeDef *Dir2_GPIO_Port_M2T, uint16_t Dir2_Pin_M2T,
 					  GPIO_TypeDef *Dir3_GPIO_Port_M3T, uint16_t Dir3_Pin_M3T,
@@ -132,6 +136,8 @@ private:
 	// zero position info
 	float ang_zero = 0;
 	float lin_zero = 0;
+
+	int GetStatusMs(TMC2209*);
 };
 
 #endif /* ROBOARM_H_ */
