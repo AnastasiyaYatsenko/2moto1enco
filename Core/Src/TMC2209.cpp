@@ -479,7 +479,7 @@ void TMC2209::initialize(long serial_baud_rate, SerialAddress serial_address) {
 	setOperationModeToSerial(serial_address);
 	setRegistersToDefaults();
 
-	minimizeMotorCurrent();
+//	minimizeMotorCurrent();
 	disable();
 	disableAutomaticCurrentScaling();
 	disableAutomaticGradientAdaptation();

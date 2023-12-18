@@ -690,7 +690,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 			setZeroFlag = true;
 		}
 		memset(rx_buffer, 0, sizeof(rx_buffer));
-		HAL_GPIO_TogglePin(Led_GPIO_Port, Led_Pin);
+//		HAL_GPIO_TogglePin(Led_GPIO_Port, Led_Pin);
+//		HAL_GPIO_TogglePin(Dir2_GPIO_Port, Dir2_Pin);
 	}
 	HAL_UART_Receive_IT(&huart1, rx_buffer, sizeof(rx_buffer));
 }
@@ -722,15 +723,15 @@ void StartDefaultTask(void const * argument)
 			//steppingyakkazavmaxim(2000, 230);
 		}
 
-		if (timerFT1 && timerFT2) {
-
-			timerFT1 = false;
-			timerFT2 = false;
-
-			correctPosFlag = false;
-			arm.correctPosition();
-
-		}
+//		if (timerFT1 && timerFT2) {
+//
+//			timerFT1 = false;
+//			timerFT2 = false;
+//
+//			correctPosFlag = false;
+//			arm.correctPosition();
+//
+//		}
 
 		osDelay(1);
 	}

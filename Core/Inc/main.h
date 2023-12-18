@@ -84,8 +84,8 @@ void Error_Handler(void);
 #define CS1_GPIO_Port GPIOB
 #define CS2_Pin GPIO_PIN_1
 #define CS2_GPIO_Port GPIOB
-#define Dir2_Pin GPIO_PIN_10
-#define Dir2_GPIO_Port GPIOB
+#define Dir2_Pin GPIO_PIN_3
+#define Dir2_GPIO_Port GPIOA
 #define Led1_Pin GPIO_PIN_11
 #define Led1_GPIO_Port GPIOB
 #define EndCap1_Pin GPIO_PIN_12

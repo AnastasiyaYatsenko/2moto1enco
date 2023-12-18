@@ -5,9 +5,9 @@ RoboArm::RoboArm(uint8_t defaultAngleT, uint8_t defaultDistanseT) {
 	defaultAngle = defaultAngleT;
 	defaultDistanse = defaultDistanseT;
 
-	tmcd_angle.setup(huartTmc, 115200, tmcd_angle.SERIAL_ADDRESS_0);
-	tmcd_gripper.setup(huartTmc, 115200, tmcd_gripper.SERIAL_ADDRESS_1);
-	tmcd_linear.setup(huartTmc, 115200, tmcd_linear.SERIAL_ADDRESS_3);
+//	tmcd_angle.setup(huartTmc, 115200, tmcd_angle.SERIAL_ADDRESS_0);
+//	tmcd_gripper.setup(huartTmc, 115200, tmcd_gripper.SERIAL_ADDRESS_1);
+//	tmcd_linear.setup(huartTmc, 115200, tmcd_linear.SERIAL_ADDRESS_3);
 
 	startDWT();
 }
@@ -127,6 +127,9 @@ int RoboArm::GetLastPosition() {
 		posnowT_lin = GetPosEncoders(2);
 	float pos = GetAngleEncoders(posnowT_lin);
 	lastPosLinear = pos*distMax/360.0;
+
+//	lastPosAngle = ShiftZeroOutputAng(lastPosAngle);
+//	lastPosLinear = ShiftZeroOutputLin(lastPosLinear);
 	return 0;
 }
 
@@ -173,8 +176,10 @@ int RoboArm::Move2MotorsSimu(float angle, float distance) {
 //	}
 	if (lastPosLinear < distance) {
 			HAL_GPIO_WritePin(Dir2_GPIO_Port_M2, Dir2_Pin_M2, GPIO_PIN_RESET);
+			HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
 		} else if (lastPosLinear > distance) {
 			HAL_GPIO_WritePin(Dir2_GPIO_Port_M2, Dir2_Pin_M2, GPIO_PIN_SET);
+			HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
 		}
 
 //	actualPosAngle = abs(lastPosAngle - angle);
@@ -472,7 +477,7 @@ float RoboArm::ShiftZeroOutputLin(float lin_actual){
 	return lin;
 }
 
-int RoboArm::SetSettMotors(UART_HandleTypeDef &huartTmc,TIM_HandleTypeDef &htim1, TIM_HandleTypeDef &htim2, TIM_HandleTypeDef &htim3,
+int RoboArm::SetSettMotors(UART_HandleTypeDef &huartTmcT,TIM_HandleTypeDef &htim1, TIM_HandleTypeDef &htim2, TIM_HandleTypeDef &htim3,
 		GPIO_TypeDef *Dir1_GPIO_Port_M1T, uint16_t Dir1_Pin_M1T,
 		GPIO_TypeDef *Dir2_GPIO_Port_M2T, uint16_t Dir2_Pin_M2T,
 		GPIO_TypeDef *Dir3_GPIO_Port_M3T, uint16_t Dir3_Pin_M3T,
@@ -497,6 +502,27 @@ int RoboArm::SetSettMotors(UART_HandleTypeDef &huartTmc,TIM_HandleTypeDef &htim1
 	En2_Pin_M2 = En2_Pin_M2T;
 	En3_GPIO_Port_M3 = En3_GPIO_Port_M3T;
 	En3_Pin_M3 = En3_Pin_M3T;
+
+	huartTmc = &huartTmcT;
+
+//	tmcd_angle.setup(huartTmc, 115200, tmcd_angle.SERIAL_ADDRESS_0);
+//	tmcd_gripper.setup(huartTmc, 115200, tmcd_gripper.SERIAL_ADDRESS_1);
+//	tmcd_linear.setup(huartTmc, 115200, tmcd_linear.SERIAL_ADDRESS_3);
+////
+//	tmcd_angle.enable();
+//	tmcd_angle.disableAutomaticCurrentScaling();
+//	tmcd_angle.disableAutomaticGradientAdaptation();
+//
+//	tmcd_gripper.enable();
+//	tmcd_gripper.disableAutomaticCurrentScaling();
+//	tmcd_gripper.disableAutomaticGradientAdaptation();
+//
+//	tmcd_linear.enable();
+//	tmcd_linear.disableAutomaticCurrentScaling();
+//	tmcd_linear.disableAutomaticGradientAdaptation();
+//
+//	SetMicrosteps4All(4);
+
 
 //	huart_tmc = &huart_tmcT;
 
