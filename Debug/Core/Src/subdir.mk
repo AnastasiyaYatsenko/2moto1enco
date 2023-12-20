@@ -4,11 +4,6 @@
 ################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 
-CPP_SRCS += \
-../Core/Src/RoboArm.cpp \
-../Core/Src/TMC2209.cpp \
-../Core/Src/main.cpp 
-
 C_SRCS += \
 ../Core/Src/AMT22.c \
 ../Core/Src/DWT_Delay.c \
@@ -20,6 +15,11 @@ C_SRCS += \
 ../Core/Src/syscalls.c \
 ../Core/Src/sysmem.c \
 ../Core/Src/system_stm32f1xx.c 
+
+CPP_SRCS += \
+../Core/Src/RoboArm.cpp \
+../Core/Src/TMC2209.cpp \
+../Core/Src/main.cpp 
 
 C_DEPS += \
 ./Core/Src/AMT22.d \

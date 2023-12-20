@@ -24,7 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include "AMT22.h"
 #include "RoboArm.h"
-
+//#include "TMC2209.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -116,8 +116,6 @@ void StartUARTData(void const * argument);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-
-
 uint32_t cntImpulse1 = 0, cntImpulse2 = 0, step1 = 0, step2 = 0;
 
 //RoboArm arm(120, 124);
@@ -164,7 +162,7 @@ int main(void)
 	HAL_TIM_Base_Init(&htim1);
 	HAL_TIM_Base_Init(&htim2);
 
-	arm.SetSettMotors(huart2, huart1, htim1, htim2, htim3, Dir1_GPIO_Port, Dir1_Pin,
+	arm.SetSettMotors(huart2,htim1, htim2, htim3, Dir1_GPIO_Port, Dir1_Pin,
 			Dir2_GPIO_Port, Dir2_Pin, Dir3_GPIO_Port, Dir3_Pin, En1_GPIO_Port,
 			En1_Pin, En2_GPIO_Port, En2_Pin, En3_GPIO_Port, En3_Pin);
 
@@ -175,8 +173,6 @@ int main(void)
 //	arm.SetZeroEncoders();
 
 	//steppingyakkazavmaxim(15000, 12000);
-
-
 
   /* USER CODE END 2 */
 
@@ -651,9 +647,10 @@ void StartDefaultTask(void const * argument)
 	for (;;) {
 		if (startFirstMove) {
 			startFirstMove = false;
-			float angle = arm.ShiftZeroInputAng(un.params.ang);
-			uint16_t distance = arm.ShiftZeroInputLin(un.params.lin);
-			arm.Move2Motors(angle, distance);
+//			float angle = arm.ShiftZeroInputAng(un.params.ang);
+//			uint16_t distance = arm.ShiftZeroInputLin(un.params.lin);
+//			arm.Move2Motors(angle, distance);
+			arm.Move2Motors(un.params.ang, un.params.lin);
 //			arm.correctPosition();
 //			arm.Move2MotorsSimu(un.params.ang, un.params.lin);
 //			arm.Move2MotorsSimu(recAngleF, recDist);
@@ -710,7 +707,6 @@ void StartAMT22Data(void const * argument)
 //				HAL_MAX_DELAY);
 
 
-
 		osDelay(1000);
 	}
   /* USER CODE END StartAMT22Data */
@@ -759,7 +755,7 @@ void StartUARTData(void const * argument)
 				posnowT_2 = arm.GetPosEncoders(2); //try again
 
 			float ang_pos = arm.GetAngleEncoders(posnowT_2);
-			float pos_actual = ang_pos * 250.0 / 360.0;
+			float pos_actual = ang_pos * arm.distMax / 360.0;
 			float pos = arm.ShiftZeroOutputLin(pos_actual);
 //			angleT = arm.GetAngleEncoders(posnowT) * 100;
 //
