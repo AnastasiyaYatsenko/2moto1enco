@@ -647,8 +647,8 @@ void StartDefaultTask(void const * argument)
 	for (;;) {
 		if (startFirstMove) {
 			startFirstMove = false;
-//			float angle = arm.ShiftZeroInputAng(un.params.ang);
-//			uint16_t distance = arm.ShiftZeroInputLin(un.params.lin);
+//			float angle = arm.UnshiftZeroAng(un.params.ang);
+//			uint16_t distance = arm.UnshiftZeroLin(un.params.lin);
 //			arm.Move2Motors(angle, distance);
 			arm.Move2Motors(un.params.ang, un.params.lin);
 //			arm.correctPosition();
@@ -745,7 +745,7 @@ void StartUARTData(void const * argument)
 
 //			float ang = posnowT_1*360/16384;
 			float ang_actual = arm.GetAngleEncoders(posnowT_1);
-			float ang = arm.ShiftZeroOutputAng(ang_actual);
+			float ang = arm.ShiftZeroAng(ang_actual);
 
 			attempts = 0;
 //			un_send.params.ang = angleT;
@@ -756,7 +756,7 @@ void StartUARTData(void const * argument)
 
 			float ang_pos = arm.GetAngleEncoders(posnowT_2);
 			float pos_actual = ang_pos * arm.distMax / 360.0;
-			float pos = arm.ShiftZeroOutputLin(pos_actual);
+			float pos = arm.ShiftZeroLin(pos_actual);
 //			angleT = arm.GetAngleEncoders(posnowT) * 100;
 //
 //			float distPsteps = angleT * (motorStep * drvMicroSteps)

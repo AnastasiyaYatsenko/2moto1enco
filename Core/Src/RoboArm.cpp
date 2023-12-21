@@ -143,8 +143,8 @@ int RoboArm::Move2Motors(float angle, float distance) {
 	SetEnable(2, false);
 
 	GetLastPosition(); //update -> lastPosAngle lastPosLinear from ENCODER
-	float lastPosAngle = ShiftZeroOutputAng(lastPosAngle_Enc);
-	float lastPosLinear = ShiftZeroOutputLin(lastPosLinear_Enc);
+	float lastPosAngle = ShiftZeroAng(lastPosAngle_Enc);
+	float lastPosLinear = ShiftZeroLin(lastPosLinear_Enc);
 
 	float pos_ang = abs(lastPosAngle - angle);
 	float inverse_pos_ang = abs(360.0 - pos_ang);
@@ -205,8 +205,9 @@ int RoboArm::Move2Motors(float angle, float distance) {
 //	uint32_t periodM1 = 1200; //reduse to 600-400 mks for 32 microsteps
 	uint32_t periodM1 = 600;
 	uint32_t psc = 72-1;
-	uint32_t delimiter=1;
-	uint32_t mnoj=1;
+
+	float delimiter=1;
+	float mnoj=1;
 
 	if (anglePsteps > distPsteps) {
 
@@ -214,8 +215,8 @@ int RoboArm::Move2Motors(float angle, float distance) {
 		htim1M1->Instance->ARR = periodM1;
 		htim1M1->Instance->CCR1 = periodM1/2;
 
-		delimiter = anglePsteps / distPsteps;
-		mnoj = periodM1 * delimiter;
+		delimiter = float(anglePsteps) / float(distPsteps);
+		mnoj = ceil(periodM1 * delimiter);
 
 		htim2M2->Instance->PSC = psc;
 		htim2M2->Instance->ARR = mnoj;
@@ -227,13 +228,42 @@ int RoboArm::Move2Motors(float angle, float distance) {
 		htim2M2->Instance->ARR = periodM1;
 		htim2M2->Instance->CCR2 = periodM1 / 2;
 
-		delimiter = distPsteps / anglePsteps;
-		mnoj = periodM1 * delimiter;
+		delimiter = float(distPsteps) / float(anglePsteps);
+		mnoj = ceil(periodM1 * delimiter);
 
 		htim1M1->Instance->PSC = psc;
 		htim1M1->Instance->ARR = mnoj;
 		htim1M1->Instance->CCR1 = mnoj / 2;
 	}
+//	uint32_t delimiter=1;
+//	uint32_t mnoj=1;
+//
+//	if (anglePsteps > distPsteps) {
+//
+//		htim1M1->Instance->PSC = psc;
+//		htim1M1->Instance->ARR = periodM1;
+//		htim1M1->Instance->CCR1 = periodM1/2;
+//
+//		delimiter = anglePsteps / distPsteps;
+//		mnoj = periodM1 * delimiter;
+//
+//		htim2M2->Instance->PSC = psc;
+//		htim2M2->Instance->ARR = mnoj;
+//		htim2M2->Instance->CCR2 = mnoj / 2;
+//
+//	} else if (anglePsteps < distPsteps) {
+//
+//		htim2M2->Instance->PSC = psc;
+//		htim2M2->Instance->ARR = periodM1;
+//		htim2M2->Instance->CCR2 = periodM1 / 2;
+//
+//		delimiter = distPsteps / anglePsteps;
+//		mnoj = periodM1 * delimiter;
+//
+//		htim1M1->Instance->PSC = psc;
+//		htim1M1->Instance->ARR = mnoj;
+//		htim1M1->Instance->CCR1 = mnoj / 2;
+//	}
 
 	stateMoveM1 = true;
 	stateMoveM2 = true;
@@ -474,28 +504,28 @@ int RoboArm::SetSoftwareZero() {
 	return 0;
 }
 
-float RoboArm::ShiftZeroInputAng(float angle){
+float RoboArm::UnshiftZeroAng(float angle){
 	float ang_actual = ang_zero + angle;
 	if (ang_actual > 360.0)
 		ang_actual -= 360.0;
 	return ang_actual;
 }
 
-float RoboArm::ShiftZeroInputLin(float distance){
+float RoboArm::UnshiftZeroLin(float distance){
 	float lin_actual = lin_zero + distance;
 	if (lin_actual > distMax)
 		lin_actual -= distMax;
 	return lin_actual;
 }
 
-float RoboArm::ShiftZeroOutputAng(float ang_actual){
+float RoboArm::ShiftZeroAng(float ang_actual){
 	float ang = ang_actual - ang_zero;
 	if (ang < 0.0)
 		ang = 360.0 + ang;
 	return ang;
 }
 
-float RoboArm::ShiftZeroOutputLin(float lin_actual){
+float RoboArm::ShiftZeroLin(float lin_actual){
 	float lin = lin_actual - lin_zero;
 	if (lin < 0.0)
 		lin = distMax + lin;

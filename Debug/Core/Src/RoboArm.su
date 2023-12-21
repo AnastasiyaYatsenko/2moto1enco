@@ -1,25 +1,26 @@
 /opt/st/stm32cubeide_1.13.2/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.11.3.rel1.linux64_1.1.1.202309131626/tools/arm-none-eabi/include/c++/11.3.1/bits/std_abs.h:71:3:constexpr double std::abs(double)	16	static
 /opt/st/stm32cubeide_1.13.2/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.11.3.rel1.linux64_1.1.1.202309131626/tools/arm-none-eabi/include/c++/11.3.1/bits/std_abs.h:75:3:constexpr float std::abs(float)	16	static
+/opt/st/stm32cubeide_1.13.2/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.11.3.rel1.linux64_1.1.1.202309131626/tools/arm-none-eabi/include/c++/11.3.1/cmath:165:3:constexpr float std::ceil(float)	16	static
 ../Core/Src/RoboArm.cpp:4:1:RoboArm::RoboArm(uint8_t, uint8_t)	16	static
 ../Core/Src/RoboArm.cpp:12:5:int RoboArm::CloseGripper()	16	static
 ../Core/Src/RoboArm.cpp:16:5:int RoboArm::EmergencyStop()	16	static
 ../Core/Src/RoboArm.cpp:117:5:int RoboArm::GetLastPosition()	32	static
-../Core/Src/RoboArm.cpp:132:5:int RoboArm::Move2Motors(float, float)	64	static
-../Core/Src/RoboArm.cpp:252:5:int MoveLinear(float)	16	static
-../Core/Src/RoboArm.cpp:258:5:int MoveAngle(float)	16	static
-../Core/Src/RoboArm.cpp:358:5:int RoboArm::factoryReset()	16	static
-../Core/Src/RoboArm.cpp:366:5:int RoboArm::OpenGripper()	16	static
-../Core/Src/RoboArm.cpp:370:5:int RoboArm::setPrintState(bool)	16	static
-../Core/Src/RoboArm.cpp:379:6:bool RoboArm::getPrintState()	16	static
-../Core/Src/RoboArm.cpp:388:5:int RoboArm::SetMicrosteps4All(uint8_t)	16	static
-../Core/Src/RoboArm.cpp:397:5:int RoboArm::SetSettEncoders(SPI_HandleTypeDef&, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t, uint8_t)	24	static
-../Core/Src/RoboArm.cpp:411:7:float RoboArm::GetAngleEncoders(uint32_t)	16	static
-../Core/Src/RoboArm.cpp:416:10:uint32_t RoboArm::GetPosEncoders(uint8_t)	16	static
-../Core/Src/RoboArm.cpp:435:5:int RoboArm::SetZeroEncoders()	16	static
-../Core/Src/RoboArm.cpp:448:5:int RoboArm::SetSoftwareZero()	40	static
-../Core/Src/RoboArm.cpp:477:7:float RoboArm::ShiftZeroInputAng(float)	24	static
-../Core/Src/RoboArm.cpp:484:7:float RoboArm::ShiftZeroInputLin(float)	24	static
-../Core/Src/RoboArm.cpp:491:7:float RoboArm::ShiftZeroOutputAng(float)	24	static
-../Core/Src/RoboArm.cpp:498:7:float RoboArm::ShiftZeroOutputLin(float)	24	static
-../Core/Src/RoboArm.cpp:505:5:int RoboArm::SetSettMotors(UART_HandleTypeDef&, TIM_HandleTypeDef&, TIM_HandleTypeDef&, TIM_HandleTypeDef&, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t)	24	static
-../Core/Src/RoboArm.cpp:565:5:int RoboArm::SetEnable(uint16_t, bool)	24	static
+../Core/Src/RoboArm.cpp:132:5:int RoboArm::Move2Motors(float, float)	72	static
+../Core/Src/RoboArm.cpp:282:5:int MoveLinear(float)	16	static
+../Core/Src/RoboArm.cpp:288:5:int MoveAngle(float)	16	static
+../Core/Src/RoboArm.cpp:388:5:int RoboArm::factoryReset()	16	static
+../Core/Src/RoboArm.cpp:396:5:int RoboArm::OpenGripper()	16	static
+../Core/Src/RoboArm.cpp:400:5:int RoboArm::setPrintState(bool)	16	static
+../Core/Src/RoboArm.cpp:409:6:bool RoboArm::getPrintState()	16	static
+../Core/Src/RoboArm.cpp:418:5:int RoboArm::SetMicrosteps4All(uint8_t)	16	static
+../Core/Src/RoboArm.cpp:427:5:int RoboArm::SetSettEncoders(SPI_HandleTypeDef&, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t, uint8_t)	24	static
+../Core/Src/RoboArm.cpp:441:7:float RoboArm::GetAngleEncoders(uint32_t)	16	static
+../Core/Src/RoboArm.cpp:446:10:uint32_t RoboArm::GetPosEncoders(uint8_t)	16	static
+../Core/Src/RoboArm.cpp:465:5:int RoboArm::SetZeroEncoders()	16	static
+../Core/Src/RoboArm.cpp:478:5:int RoboArm::SetSoftwareZero()	40	static
+../Core/Src/RoboArm.cpp:507:7:float RoboArm::UnshiftZeroAng(float)	24	static
+../Core/Src/RoboArm.cpp:514:7:float RoboArm::UnshiftZeroLin(float)	24	static
+../Core/Src/RoboArm.cpp:521:7:float RoboArm::ShiftZeroAng(float)	24	static
+../Core/Src/RoboArm.cpp:528:7:float RoboArm::ShiftZeroLin(float)	24	static
+../Core/Src/RoboArm.cpp:535:5:int RoboArm::SetSettMotors(UART_HandleTypeDef&, TIM_HandleTypeDef&, TIM_HandleTypeDef&, TIM_HandleTypeDef&, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t)	24	static
+../Core/Src/RoboArm.cpp:595:5:int RoboArm::SetEnable(uint16_t, bool)	24	static

@@ -94,10 +94,10 @@ public:
 	uint32_t GetPosEncoders(uint8_t);				  // get actually position encoders 1 or 2
 	int SetZeroEncoders();							  // set zero position all encoders
 	int SetSoftwareZero();							  // memorize current position as zero position
-	float ShiftZeroInputAng(float);					  // converts user angle into actual angle
-	float ShiftZeroInputLin(float);					  // converts user distance into actual distance
-	float ShiftZeroOutputAng(float);				  // converts actual angle into user angle
-	float ShiftZeroOutputLin(float);				  // converts actual distance into user distance
+	float UnshiftZeroAng(float);					  // converts user angle into actual angle
+	float UnshiftZeroLin(float);					  // converts user distance into actual distance
+	float ShiftZeroAng(float);				  // converts actual angle into user angle
+	float ShiftZeroLin(float);				  // converts actual distance into user distance
 	float GetAngleEncoders(uint32_t);				  // get calculated Angle - pos value
 	uint32_t GetPosTactEncoders(uint32_t);			  // get calculated position
 
