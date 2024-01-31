@@ -15,12 +15,13 @@
 ../Core/Src/RoboArm.cpp:418:5:int RoboArm::SetMicrosteps4All(uint8_t)	1
 ../Core/Src/RoboArm.cpp:427:5:int RoboArm::SetSettEncoders(SPI_HandleTypeDef&, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t, uint8_t)	1
 ../Core/Src/RoboArm.cpp:441:7:float RoboArm::GetAngleEncoders(uint32_t)	1
-../Core/Src/RoboArm.cpp:446:10:uint32_t RoboArm::GetPosEncoders(uint8_t)	3
-../Core/Src/RoboArm.cpp:465:5:int RoboArm::SetZeroEncoders()	1
-../Core/Src/RoboArm.cpp:478:5:int RoboArm::SetSoftwareZero()	9
-../Core/Src/RoboArm.cpp:507:7:float RoboArm::UnshiftZeroAng(float)	2
-../Core/Src/RoboArm.cpp:514:7:float RoboArm::UnshiftZeroLin(float)	2
-../Core/Src/RoboArm.cpp:521:7:float RoboArm::ShiftZeroAng(float)	2
-../Core/Src/RoboArm.cpp:528:7:float RoboArm::ShiftZeroLin(float)	2
-../Core/Src/RoboArm.cpp:535:5:int RoboArm::SetSettMotors(UART_HandleTypeDef&, TIM_HandleTypeDef&, TIM_HandleTypeDef&, TIM_HandleTypeDef&, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t)	1
-../Core/Src/RoboArm.cpp:595:5:int RoboArm::SetEnable(uint16_t, bool)	5
+../Core/Src/RoboArm.cpp:446:7:float RoboArm::GetLinEncoders(float)	2
+../Core/Src/RoboArm.cpp:455:10:uint32_t RoboArm::GetPosEncoders(uint8_t)	3
+../Core/Src/RoboArm.cpp:474:5:int RoboArm::SetZeroEncoders()	1
+../Core/Src/RoboArm.cpp:487:5:int RoboArm::SetSoftwareZero()	9
+../Core/Src/RoboArm.cpp:516:7:float RoboArm::UnshiftZeroAng(float)	2
+../Core/Src/RoboArm.cpp:523:7:float RoboArm::UnshiftZeroLin(float)	2
+../Core/Src/RoboArm.cpp:530:7:float RoboArm::ShiftZeroAng(float)	2
+../Core/Src/RoboArm.cpp:537:7:float RoboArm::ShiftZeroLin(float)	2
+../Core/Src/RoboArm.cpp:544:5:int RoboArm::SetSettMotors(UART_HandleTypeDef&, TIM_HandleTypeDef&, TIM_HandleTypeDef&, TIM_HandleTypeDef&, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t, GPIO_TypeDef*, uint16_t)	1
+../Core/Src/RoboArm.cpp:604:5:int RoboArm::SetEnable(uint16_t, bool)	5

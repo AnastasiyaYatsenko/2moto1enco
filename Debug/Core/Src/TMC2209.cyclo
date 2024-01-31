@@ -56,30 +56,30 @@
 ../Core/Src/TMC2209.cpp:463:9:uint8_t TMC2209::getPwmGradientAuto()	1
 ../Core/Src/TMC2209.cpp:470:10:uint16_t TMC2209::getMicrostepCounter()	1
 ../Core/Src/TMC2209.cpp:476:6:void TMC2209::initialize(long int, TMC2209::SerialAddress)	1
-../Core/Src/TMC2209.cpp:489:5:int TMC2209::serialAvailable()	3
-../Core/Src/TMC2209.cpp:498:8:size_t TMC2209::serialWrite(uint8_t)	3
-../Core/Src/TMC2209.cpp:522:5:int TMC2209::serialRead()	3
-../Core/Src/TMC2209.cpp:544:6:void TMC2209::serialFlush()	2
-../Core/Src/TMC2209.cpp:560:6:void TMC2209::setOperationModeToSerial(TMC2209::SerialAddress)	1
-../Core/Src/TMC2209.cpp:572:6:void TMC2209::setRegistersToDefaults()	1
-../Core/Src/TMC2209.cpp:600:6:void TMC2209::readAndStoreRegisters()	1
-../Core/Src/TMC2209.cpp:606:6:bool TMC2209::serialOperationMode()	1
-../Core/Src/TMC2209.cpp:613:6:void TMC2209::minimizeMotorCurrent()	1
-../Core/Src/TMC2209.cpp:619:10:uint32_t TMC2209::reverseData(uint32_t)	2
-../Core/Src/TMC2209.cpp:707:6:void TMC2209::write(uint8_t, uint32_t)	1
-../Core/Src/TMC2209.cpp:720:10:uint32_t TMC2209::read(uint8_t)	2
-../Core/Src/TMC2209.cpp:744:9:uint8_t TMC2209::percentToCurrentSetting(uint8_t)	1
-../Core/Src/TMC2209.cpp:751:9:uint8_t TMC2209::currentSettingToPercent(uint8_t)	1
-../Core/Src/TMC2209.cpp:757:9:uint8_t TMC2209::map(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t)	1
-../Core/Src/TMC2209.cpp:761:9:uint8_t TMC2209::percentToHoldDelaySetting(uint8_t)	1
-../Core/Src/TMC2209.cpp:767:9:uint8_t TMC2209::holdDelaySettingToPercent(uint8_t)	1
-../Core/Src/TMC2209.cpp:772:6:void TMC2209::writeStoredGlobalConfig()	1
-../Core/Src/TMC2209.cpp:776:10:uint32_t TMC2209::readGlobalConfigBytes()	1
-../Core/Src/TMC2209.cpp:780:6:void TMC2209::writeStoredDriverCurrent()	3
-../Core/Src/TMC2209.cpp:793:6:void TMC2209::writeStoredChopperConfig()	1
-../Core/Src/TMC2209.cpp:797:10:uint32_t TMC2209::readChopperConfigBytes()	1
-../Core/Src/TMC2209.cpp:801:6:void TMC2209::writeStoredPwmConfig()	1
-../Core/Src/TMC2209.cpp:805:10:uint32_t TMC2209::readPwmConfigBytes()	1
-../Core/Src/TMC2209.cpp:632:9:uint8_t TMC2209::calculateCrc(Datagram&, uint8_t) [with Datagram = TMC2209::WriteReadReplyDatagram]	4
-../Core/Src/TMC2209.cpp:651:6:void TMC2209::sendDatagramUnidirectional(Datagram&, uint8_t) [with Datagram = TMC2209::WriteReadReplyDatagram]	1
-../Core/Src/TMC2209.cpp:632:9:uint8_t TMC2209::calculateCrc(Datagram&, uint8_t) [with Datagram = TMC2209::ReadRequestDatagram]	4
+../Core/Src/TMC2209.cpp:490:5:int TMC2209::serialAvailable()	3
+../Core/Src/TMC2209.cpp:499:8:size_t TMC2209::serialWrite(uint8_t)	3
+../Core/Src/TMC2209.cpp:523:5:int TMC2209::serialRead()	3
+../Core/Src/TMC2209.cpp:545:6:void TMC2209::serialFlush()	2
+../Core/Src/TMC2209.cpp:561:6:void TMC2209::setOperationModeToSerial(TMC2209::SerialAddress)	1
+../Core/Src/TMC2209.cpp:573:6:void TMC2209::setRegistersToDefaults()	1
+../Core/Src/TMC2209.cpp:601:6:void TMC2209::readAndStoreRegisters()	1
+../Core/Src/TMC2209.cpp:607:6:bool TMC2209::serialOperationMode()	1
+../Core/Src/TMC2209.cpp:614:6:void TMC2209::minimizeMotorCurrent()	1
+../Core/Src/TMC2209.cpp:620:10:uint32_t TMC2209::reverseData(uint32_t)	2
+../Core/Src/TMC2209.cpp:708:6:void TMC2209::write(uint8_t, uint32_t)	1
+../Core/Src/TMC2209.cpp:721:10:uint32_t TMC2209::read(uint8_t)	2
+../Core/Src/TMC2209.cpp:745:9:uint8_t TMC2209::percentToCurrentSetting(uint8_t)	1
+../Core/Src/TMC2209.cpp:752:9:uint8_t TMC2209::currentSettingToPercent(uint8_t)	1
+../Core/Src/TMC2209.cpp:758:9:uint8_t TMC2209::map(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t)	1
+../Core/Src/TMC2209.cpp:762:9:uint8_t TMC2209::percentToHoldDelaySetting(uint8_t)	1
+../Core/Src/TMC2209.cpp:768:9:uint8_t TMC2209::holdDelaySettingToPercent(uint8_t)	1
+../Core/Src/TMC2209.cpp:773:6:void TMC2209::writeStoredGlobalConfig()	1
+../Core/Src/TMC2209.cpp:777:10:uint32_t TMC2209::readGlobalConfigBytes()	1
+../Core/Src/TMC2209.cpp:781:6:void TMC2209::writeStoredDriverCurrent()	3
+../Core/Src/TMC2209.cpp:794:6:void TMC2209::writeStoredChopperConfig()	1
+../Core/Src/TMC2209.cpp:798:10:uint32_t TMC2209::readChopperConfigBytes()	1
+../Core/Src/TMC2209.cpp:802:6:void TMC2209::writeStoredPwmConfig()	1
+../Core/Src/TMC2209.cpp:806:10:uint32_t TMC2209::readPwmConfigBytes()	1
+../Core/Src/TMC2209.cpp:633:9:uint8_t TMC2209::calculateCrc(Datagram&, uint8_t) [with Datagram = TMC2209::WriteReadReplyDatagram]	4
+../Core/Src/TMC2209.cpp:652:6:void TMC2209::sendDatagramUnidirectional(Datagram&, uint8_t) [with Datagram = TMC2209::WriteReadReplyDatagram]	1
+../Core/Src/TMC2209.cpp:633:9:uint8_t TMC2209::calculateCrc(Datagram&, uint8_t) [with Datagram = TMC2209::ReadRequestDatagram]	4

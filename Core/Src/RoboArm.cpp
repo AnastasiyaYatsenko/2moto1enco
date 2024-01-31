@@ -125,7 +125,7 @@ int RoboArm::GetLastPosition() {
 	while(posnowT_lin == 0xFFFF && ++attempts < 3)
 		posnowT_lin = GetPosEncoders(2);
 	float pos = GetAngleEncoders(posnowT_lin);
-	lastPosLinear_Enc = pos*distMax/360.0;
+	lastPosLinear_Enc = GetLinEncoders(pos);
 	return 0;
 }
 
@@ -179,10 +179,10 @@ int RoboArm::Move2Motors(float angle, float distance) {
 //	}
 	if (lastPosLinear < distance) {
 //			HAL_GPIO_WritePin(Dir2_GPIO_Port_M2, Dir2_Pin_M2, GPIO_PIN_RESET);
-			tmcd_linear.enableInverseMotorDirection();
+			tmcd_linear.disableInverseMotorDirection();
 		} else if (lastPosLinear > distance) {
 //			HAL_GPIO_WritePin(Dir2_GPIO_Port_M2, Dir2_Pin_M2, GPIO_PIN_SET);
-			tmcd_linear.disableInverseMotorDirection();
+			tmcd_linear.enableInverseMotorDirection();
 		}
 
 //	actualPosAngle = abs(lastPosAngle - angle);
@@ -202,8 +202,8 @@ int RoboArm::Move2Motors(float angle, float distance) {
 
 // 1, 2, 3, 4, 6, 8, 9, 12, 18, 24, 36 и 72 - Це можлива обрана максимальна швидкість для мотора з більшої кількістю кроків. Це дільник таймера
 
-//	uint32_t periodM1 = 1200; //reduse to 600-400 mks for 32 microsteps
-	uint32_t periodM1 = 600;
+//	uint32_t periodM1 = 1200; //reduce to 600-400 mks for 32 microsteps
+	uint32_t periodM1 = 200;
 	uint32_t psc = 72-1;
 
 	float delimiter=1;
@@ -443,6 +443,15 @@ float RoboArm::GetAngleEncoders(uint32_t encoderValue) {
 	return calculateAngle(encoderValue, ResolutionEncoders);
 }
 
+float RoboArm::GetLinEncoders(float ang) {
+	float pos;
+	if (inverseLinZero){
+		ang = abs(360-ang);
+	}
+	pos = ang * distMax / 360.0;
+	return pos;
+}
+
 uint32_t RoboArm::GetPosEncoders(uint8_t numEnc) {
 	switch (numEnc) {
 	case 1:
@@ -497,7 +506,7 @@ int RoboArm::SetSoftwareZero() {
 	while(posnowT_2 == 0xFFFF && ++attempts < 3)
 		posnowT_2 = GetPosEncoders(2); //try again
 	float ang_pos = GetAngleEncoders(posnowT_2);
-	lin_zero = ang_pos*distMax/360.0 - defaultDistanse;
+	lin_zero = GetLinEncoders(ang_pos) - defaultDistanse;
 	if (lin_zero < 0.0)
 		lin_zero = distMax + lin_zero;
 

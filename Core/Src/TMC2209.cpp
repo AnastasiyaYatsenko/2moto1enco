@@ -480,6 +480,7 @@ void TMC2209::initialize(long serial_baud_rate, SerialAddress serial_address) {
 	setRegistersToDefaults();
 
 	//minimizeMotorCurrent();
+	setRunCurrent(100);
 	disable();
 	disableAutomaticCurrentScaling();
 	disableAutomaticGradientAdaptation();

@@ -64,7 +64,7 @@ uint8_t transfer_cplt = 0;
 
 bool startFirstMove = false;
 bool sendDataFlag = false;
-bool stopBeforeReboot = false;
+bool stopHand = false;
 bool setZeroFlag = false;
 
 bool timerFT1 = false;
@@ -617,12 +617,14 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 			startFirstMove = true;
 			break;
 		case 25:
-			stopBeforeReboot = true;
+			stopHand = true;
+			break;
 		case 50:
 			sendDataFlag = true;
 			break;
 		case 75:
 			setZeroFlag = true;
+			break;
 		}
 		memset(rx_buffer, 0, sizeof(rx_buffer));
 		HAL_GPIO_TogglePin(Led_GPIO_Port, Led_Pin);
@@ -661,6 +663,13 @@ void StartDefaultTask(void const * argument)
 
 			timerFT1 = false;
 			timerFT2 = false;
+			un_send.params.lin = 0;
+			un_send.params.ang = 0;
+			un_send.params.hold = 10;
+			HAL_UART_Transmit(&huart1, un_send.bytes, sizeof(un_send.bytes),
+					12);
+
+			//TODO SEND MSG BACK TO RASPBERRY
 
 		//	arm.correctPosition();
 
@@ -755,7 +764,7 @@ void StartUARTData(void const * argument)
 				posnowT_2 = arm.GetPosEncoders(2); //try again
 
 			float ang_pos = arm.GetAngleEncoders(posnowT_2);
-			float pos_actual = ang_pos * arm.distMax / 360.0;
+			float pos_actual = arm.GetLinEncoders(ang_pos);
 			float pos = arm.ShiftZeroLin(pos_actual);
 //			angleT = arm.GetAngleEncoders(posnowT) * 100;
 //
@@ -784,8 +793,8 @@ void StartUARTData(void const * argument)
 
 		}
 
-		if (stopBeforeReboot) {
-			stopBeforeReboot = false;
+		if (stopHand) {
+			stopHand = false;
 			arm.EmergencyStop();
 			un_send.params.lin = 0;
 			un_send.params.ang = 0;

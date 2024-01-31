@@ -77,6 +77,7 @@ public:
 	bool stateMoveM1 = false, stateMoveM2 = false;
 	uint16_t defaultAngle, defaultDistanse; // стандартний кут //0 120 240 та дистанція 124 мм
 	bool stateMovement[2];
+	bool inverseLinZero = true;
 
 	RoboArm(uint8_t, uint8_t);
 	int OpenGripper();				   // Open Gripper
@@ -96,9 +97,10 @@ public:
 	int SetSoftwareZero();							  // memorize current position as zero position
 	float UnshiftZeroAng(float);					  // converts user angle into actual angle
 	float UnshiftZeroLin(float);					  // converts user distance into actual distance
-	float ShiftZeroAng(float);				  // converts actual angle into user angle
-	float ShiftZeroLin(float);				  // converts actual distance into user distance
+	float ShiftZeroAng(float);				  		  // converts actual angle into user angle
+	float ShiftZeroLin(float);				  		  // converts actual distance into user distance
 	float GetAngleEncoders(uint32_t);				  // get calculated Angle - pos value
+	float GetLinEncoders(float);				  	  // get calculated linear pos value from angle
 	uint32_t GetPosTactEncoders(uint32_t);			  // get calculated position
 
 	int setPrintState(bool); // flag to send status to uart
